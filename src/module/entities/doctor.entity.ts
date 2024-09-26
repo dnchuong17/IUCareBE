@@ -1,17 +1,14 @@
 import {BaseEntity, Column, Entity, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
-@Entity('Patient')
-export class PatientEntity extends BaseEntity {
+@Entity('doctor')
+export class DoctorEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    patientName: string;
+    doctorName: string;
 
     @Column()
     address: string;
-
-    @Column()
-    major: string;
 
     @Column()
     phone: string;
@@ -23,5 +20,6 @@ export class PatientEntity extends BaseEntity {
     password: string;
 
     @Column()
-    insurance_id: number;
+
+    department_id: number;
 }
