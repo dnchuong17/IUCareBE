@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {DoctorModule} from "./module/doctor/doctor.module";
 import {PatientModule} from "./module/patient/patient.module";
+import { AuthModule } from './auth/auth.module';
 import * as process from "process";
 import * as dotenv from 'dotenv';
 
@@ -21,6 +22,7 @@ dotenv.config();
     }),
       DoctorModule,
       PatientModule,
+      AuthModule,
   ],
   controllers: [],
   providers: [],

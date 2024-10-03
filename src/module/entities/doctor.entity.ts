@@ -20,6 +20,5 @@ export class DoctorEntity extends BaseEntity {
     password: string;
 
     @Column()
-
     department_id: number;
 }

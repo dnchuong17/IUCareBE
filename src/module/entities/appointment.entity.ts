@@ -18,6 +18,6 @@ export class AppointmentEntity extends BaseEntity {
     @Column()
     patientId: number;
 
-    @OneToMany(type => MedicineEntity, medicine => medicine.id)
+    @OneToMany(type => MedicineEntity, medicine => medicine.appointment)
     medicines: MedicineEntity[];
 }

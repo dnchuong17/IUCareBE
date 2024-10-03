@@ -15,6 +15,6 @@ export class MedicineEntity extends BaseEntity {
     @Column()
     price: string;
 
-    @ManyToOne(type => AppointmentEntity, appointment => appointment.id)
-    appointmentId: AppointmentEntity;
+    @ManyToOne(() => AppointmentEntity, appointment => appointment.medicines)
+    appointment: AppointmentEntity;
 }
