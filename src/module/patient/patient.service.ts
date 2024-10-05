@@ -1,9 +1,10 @@
-import {BadRequestException, Injectable, UnauthorizedException} from "@nestjs/common";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {PatientEntity} from "../entities/patient.entity";
 import {Repository} from "typeorm";
 import {PatientDto} from "../dto/patient.dto";
 import * as bcrypt from 'bcrypt';
+
 @Injectable()
 export class PatientService {
     constructor(@InjectRepository(PatientEntity)
@@ -11,15 +12,12 @@ export class PatientService {
     }
 
     async findPatientWithAccount(patientAccount: string){
-        const patient = await this.patientRepository.findOne( {where: {account: patientAccount}})
-        console.log(patient);
-        return patient;
-
+        return await this.patientRepository.findOne({where: {account: patientAccount}});
     }
 
     async patientRegister(patientDto: PatientDto){
-        const existingUser = await this.patientRepository.findOne( {where: { account: patientDto.account }})
-        if (existingUser) throw Error("Account existed")
+        const accountInUse = await this.patientRepository.findOne( {where: { account: patientDto.account }})
+        if (accountInUse) throw Error("Account existed")
         else {
             const hashedPassword = await bcrypt.hash(patientDto.password, 10);
             try {
@@ -36,8 +34,7 @@ export class PatientService {
             } catch (error) {
                 throw new UnauthorizedException(error);
             }
-
-            }
+        }
     }
 
 }

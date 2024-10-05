@@ -1,9 +1,9 @@
-import {Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards} from '@nestjs/common';
-import {AuthService, Public} from "./auth.service";
+import {Body, Controller, Get, Post, Request} from '@nestjs/common';
+import {AuthService} from "./auth.service";
 import {SignInDto} from "../module/dto/signIn.dto";
-import {AuthGuard} from "./auth.guard";
 import {PatientDto} from "../module/dto/patient.dto";
 import {PatientService} from "../module/patient/patient.service";
+import {Public} from "./public.decorator";
 
 @Controller('auth')
 export class AuthController {
@@ -11,26 +11,20 @@ export class AuthController {
     private readonly patientService: PatientService) {
     }
     @Public()
-    @Post('register')
+    @Post('patientRegister')
     async register(@Body() patientDto: PatientDto) {
         return await this.patientService.patientRegister(patientDto);
     }
 
+    @Public()
     @Post('patientLogin')
     signIn(@Body() signInDto: SignInDto) {
-        console.log('Received login request:', signInDto);
         return this.authService.validatePatient(signInDto.account, signInDto.password);
     }
 
-    @UseGuards(AuthGuard)
     @Get('profile')
     getProfile(@Request() req) {
-        return req.user;
-    }
-    @Public()
-    @Get()
-    findAll() {
-        return [];
+        return req.patient;
     }
 }
 
