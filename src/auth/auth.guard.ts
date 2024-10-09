@@ -31,7 +31,7 @@ export class AuthGuard implements CanActivate {
                 token,
                 { secret: process.env.JWT_SECRETKEY }
             )
-            request['patient'] = payload; // == req.user, so that we can access it in our route handler
+            request['doctor'] = payload; // == req.user, so that we can access it in our route handler
         } catch {
             throw new UnauthorizedException();
         }
@@ -40,8 +40,6 @@ export class AuthGuard implements CanActivate {
 
     private extractTokenFromHeader(request: Request): string | undefined {
         const [type, token] = request.headers.authorization?.split(' ')?? [];
-        console.log('type: ', type);
-        console.log('token: ', token);
         return type === 'Bearer' ? token : undefined;
     }
 }

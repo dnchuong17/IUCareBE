@@ -1,6 +1,8 @@
 export class DoctorDto {
-    doctorName: string;
+    account: string;
+    password: string;
+    patientName: string;
     address: string;
+    departmentId: string;
     phone: string;
-    departmentId: number;
 }

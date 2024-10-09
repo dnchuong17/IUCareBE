@@ -1,30 +1,31 @@
 import {Body, Controller, Get, Post, Request} from '@nestjs/common';
 import {AuthService} from "./auth.service";
 import {SignInDto} from "../module/dto/signIn.dto";
-import {PatientDto} from "../module/dto/patient.dto";
-import {PatientService} from "../module/patient/patient.service";
+import {DoctorDto} from "../module/dto/doctor.dto";
+import {DoctorService} from "../module/doctor/doctor.service";
 import {Public} from "./public.decorator";
+
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService,
-    private readonly patientService: PatientService) {
+    private readonly doctorService: DoctorService) {
     }
     @Public()
-    @Post('patientRegister')
-    async register(@Body() patientDto: PatientDto) {
-        return await this.patientService.patientRegister(patientDto);
+    @Post('doctorRegister')
+    async register(@Body() doctorDto: DoctorDto) {
+        return await this.doctorService.doctorRegister(doctorDto);
     }
 
     @Public()
-    @Post('patientLogin')
+    @Post('doctorLogin')
     signIn(@Body() signInDto: SignInDto) {
-        return this.authService.validatePatient(signInDto.account, signInDto.password);
+        return this.authService.validateDoctor(signInDto.account, signInDto.password);
     }
 
     @Get('profile')
     getProfile(@Request() req) {
-        return req.patient;
+        return req.doctor;
     }
 }
 

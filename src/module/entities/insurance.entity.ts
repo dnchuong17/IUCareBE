@@ -1,5 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {PatientEntity} from "./patient.entity";
+import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity("insurance")
 export class InsuranceEntity extends BaseEntity {
@@ -14,7 +13,4 @@ export class InsuranceEntity extends BaseEntity {
 
     @Column()
     registeredHospital: string;
-
-    @ManyToOne(()=> PatientEntity, (patient) => patient.insurances)
-    patient: PatientEntity
 }
