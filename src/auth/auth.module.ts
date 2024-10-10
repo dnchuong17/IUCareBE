@@ -16,8 +16,13 @@ import {DoctorService} from "../module/doctor/doctor.service";
   JwtModule.register({
     global: true,
     secret: process.env.JWT_SECRETKEY,
-    signOptions: {expiresIn: '3600s'}
-  }), TypeOrmModule.forFeature([DoctorEntity])],
+    signOptions: {expiresIn: '300s'}
+  }), JwtModule.register({
+      global: true,
+      secret: process.env.JWT_REFRESH_SECRETKEY,
+      signOptions: {expiresIn: '7d'}
+    }),
+    TypeOrmModule.forFeature([DoctorEntity])],
   providers: [AuthService, JwtService, DoctorService, {
     provide: APP_GUARD,
     useClass: AuthGuard

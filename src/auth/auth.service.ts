@@ -3,7 +3,6 @@ import {DoctorService} from "../module/doctor/doctor.service";
 import * as bcrypt from "bcrypt";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
-import {DoctorEntity} from "../module/entities/doctor.entity";
 
 
 @Injectable()
@@ -30,11 +29,17 @@ export class AuthService {
             departmentId: doctor.department_id
         };
 
+        const access_token = await this.jwtService.signAsync(payload, { ////signAsync() function to generate our JWT
+            secret: this.configService.get<string>('JWT_SECRETKEY'),
+        })
+
+        const refresh_token = await this.jwtService.signAsync(payload, {
+            secret: this.configService.get<string>('JWT_REFRESH_SECRETKEY'),
+        })
+
         return {
-            access_token: await this.jwtService.signAsync(payload, {
-                secret: this.configService.get<string>('JWT_SECRETKEY'),
-            }), //signAsync() function to generate our JWT
+            access_token: access_token,
+            refresh_token: refresh_token
         };
     }
-
 }
