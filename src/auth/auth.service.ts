@@ -14,7 +14,7 @@ export class AuthService {
 
     async validateDoctor(account: string, password: string) {
        const doctor  = await this.doctorService.findDoctorWithAccount(account);
-        if (!doctor) {
+        if (doctor) {
             throw new UnauthorizedException('Invalid account or password');
         }
         const isPasswordValid = await bcrypt.compare(password, doctor.password);
