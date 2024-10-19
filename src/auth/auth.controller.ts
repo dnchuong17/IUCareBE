@@ -13,8 +13,9 @@ export class AuthController {
     }
     @Public()
     @Post('doctorRegister')
-    async register(@Body() doctorDto: DoctorDto) {
-        return await this.doctorService.doctorRegister(doctorDto);
+   register(@Body() doctorDto: DoctorDto) {
+
+        return this.doctorService.doctorRegister(doctorDto);
     }
 
     @Public()

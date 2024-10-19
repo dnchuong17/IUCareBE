@@ -5,6 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import * as process from "process";
 import * as dotenv from 'dotenv';
 import {ConfigModule} from "@nestjs/config";
+import {PatientModule} from "./module/patient/patient.module";
+import {AppointmentModule} from "./module/appointment/appointment.module";
 
 dotenv.config();
 
@@ -22,6 +24,8 @@ dotenv.config();
     }),
       DoctorModule,
       AuthModule,
+      PatientModule,
+      AppointmentModule,
       ConfigModule.forRoot({
         isGlobal: true,
       })
