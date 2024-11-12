@@ -1,5 +1,6 @@
-import {BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {InsuranceEntity} from "./insurance.entity";
+import {DepartmentEntity} from "./department.entity";
 @Entity('doctor')
 export class DoctorEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
@@ -12,9 +13,6 @@ export class DoctorEntity extends BaseEntity {
     address: string;
 
     @Column()
-    department_id: string;
-
-    @Column()
     phone: string;
 
     @Column()
@@ -22,4 +20,7 @@ export class DoctorEntity extends BaseEntity {
 
     @Column()
     password: string;
+
+    @ManyToOne(() => DepartmentEntity, (department) => department.doctors)
+    department: DepartmentEntity;
 }
