@@ -12,15 +12,11 @@ export class DoctorDto {
 
     @IsString()
     @IsNotEmpty()
-    patientName: string;
+    doctorName: string;
 
     @IsString()
     @IsNotEmpty()
     address: string;
-
-    @IsString()
-    @IsNotEmpty()
-    departmentId: string;
 
     @IsString()
     @Max(11)
