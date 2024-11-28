@@ -17,7 +17,7 @@ export class DoctorService {
         const dataSource = this.dataSource;
 
         const query = `
-        SELECT * FROM doctor WHERE account = $1
+        SELECT * FROM doctor WHERE doctor_account = $1
     `;
 
         const doctor = await dataSource.query(query, [doctorAccount]);
@@ -44,8 +44,8 @@ export class DoctorService {
 
         // Step 3: Insert the new doctor into the database
         const insertDoctorQuery = `
-            INSERT INTO doctor (doctor_name, doctor_address, doctor_phone, doctor_account, doctor_password, department_id)
-            VALUES ($1, $2, $3, $4, $5, $6) RETURNING doctor_id
+            INSERT INTO doctor (doctor_name, doctor_address, doctor_phone, doctor_account, doctor_password)
+            VALUES ($1, $2, $3, $4, $5) RETURNING doctor_id
         `;
         const newDoctor = await dataSource.query(insertDoctorQuery, [
             doctorDto.doctorName,
@@ -53,7 +53,6 @@ export class DoctorService {
             doctorDto.phone,
             doctorDto.account,
             hashedPassword,
-            doctorDto.department
         ]);
 
         if (newDoctor.length === 0) {

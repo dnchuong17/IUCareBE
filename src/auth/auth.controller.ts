@@ -1,9 +1,10 @@
 import {Body, Controller, Get, Post, Request} from '@nestjs/common';
-import {AuthService} from "./auth.service";
+
 import {SignInDto} from "../module/dto/signIn.dto";
 import {DoctorDto} from "../module/dto/doctor.dto";
 import {DoctorService} from "../module/doctor/doctor.service";
 import {Public} from "./public.decorator";
+import {AuthService} from "./auth.service";
 
 
 @Controller('auth')

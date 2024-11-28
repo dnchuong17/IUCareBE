@@ -1,44 +1,52 @@
-import { Injectable, UnauthorizedException} from '@nestjs/common';
-import {DoctorService} from "../module/doctor/doctor.service";
-import * as bcrypt from "bcrypt";
-import {JwtService} from "@nestjs/jwt";
-import {ConfigService} from "@nestjs/config";
-
+import {Injectable, UnauthorizedException} from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly doctorService: DoctorService,
-                private readonly jwtService: JwtService,
-                private readonly configService: ConfigService) {
-    }
+    constructor(
+        private readonly dataSource: DataSource,
+        private readonly jwtService: JwtService,
+        private readonly configService: ConfigService,
+    ) {}
 
     async validateDoctor(account: string, password: string) {
-       const doctor  = await this.doctorService.findDoctorWithAccount(account);
-        if (!doctor) {
+        const query = `
+      SELECT * FROM doctor WHERE doctor_account = $1 LIMIT 1;
+    `;
+
+        const doctor = await this.dataSource.query(query, [account]);
+
+        if (doctor.length === 0) {
             throw new UnauthorizedException('Invalid account or password');
         }
-        const isPasswordValid = await bcrypt.compare(password, doctor.password);
+
+        const doctorRecord = doctor[0];
+
+        const isPasswordValid = await bcrypt.compare(password, doctorRecord.doctor_password);
         if (!isPasswordValid) {
             throw new UnauthorizedException('Invalid account or password');
         }
 
         const payload = {
-            sub: doctor.id,
-            account: doctor.account,
-            name: doctor.doctorName,
+            sub: doctorRecord.doctor_id,
+            account: doctorRecord.doctor_account,
+            name: doctorRecord.doctor_name,
         };
 
-        const access_token = await this.jwtService.signAsync(payload, { ////signAsync() function to generate our JWT
+        const access_token = await this.jwtService.signAsync(payload, {
             secret: this.configService.get<string>('JWT_SECRETKEY'),
-        })
+        });
 
         const refresh_token = await this.jwtService.signAsync(payload, {
             secret: this.configService.get<string>('JWT_REFRESH_SECRETKEY'),
-        })
+        });
 
         return {
-            access_token: access_token,
-            refresh_token: refresh_token
+            access_token,
+            refresh_token,
         };
     }
 }

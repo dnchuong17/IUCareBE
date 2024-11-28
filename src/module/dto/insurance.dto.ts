@@ -1,4 +1,5 @@
 import {IsNotEmpty, IsString} from "class-validator";
+import {PatientEntity} from "../entities/patient.entity";
 
 export class InsuranceDto {
     @IsString()
@@ -11,5 +12,7 @@ export class InsuranceDto {
 
     @IsString()
     @IsNotEmpty()
-    registeredHospital: string
+    registeredHospital: string;
+
+    patient: PatientEntity;
 }

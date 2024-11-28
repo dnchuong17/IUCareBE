@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {InsuranceEntity} from "./insurance.entity";
 import {IsNotEmpty, IsString} from "class-validator";
 import {DepartmentEntity} from "./department.entity";
@@ -33,5 +33,6 @@ export class DoctorEntity extends BaseEntity {
     password: string;
 
     @ManyToOne(() => DepartmentEntity, (department) => department.doctors)
+    @JoinColumn({ name: 'department_id' })
     department: DepartmentEntity;
 }
