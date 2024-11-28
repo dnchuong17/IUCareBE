@@ -1,7 +1,7 @@
 export class DoctorDto {
     account: string;
     password: string;
-    patientName: string;
+    doctorName: string;
     address: string;
     departmentId: string;
     phone: string;
