@@ -29,32 +29,40 @@ export class DoctorService {
     }
 
     async doctorRegister(doctorDto: DoctorDto) {
-        const dataSource = this.dataSource; // assuming you inject or have access to the DataSource
+        const dataSource = this.dataSource; // Assuming you have access to the DataSource
 
-        const accountCheckQuery = `SELECT 1 FROM doctor WHERE account = $1`;
+        // Step 1: Check if the account already exists
+        const accountCheckQuery = `SELECT 1 FROM doctor WHERE doctor_account = $1`;
         const accountInUse = await dataSource.query(accountCheckQuery, [doctorDto.account]);
 
         if (accountInUse.length > 0) {
-            throw new Error("Account already exists");
+            throw new NotFoundException("Account already exists");
         }
+
+        // Step 2: Hash the password before inserting
         const hashedPassword = await bcrypt.hash(doctorDto.password, 10);
 
+        // Step 3: Insert the new doctor into the database
         const insertDoctorQuery = `
-        INSERT INTO doctor (doctorName, address, phone, account, password, departmentId)
-        VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
-    `;
+            INSERT INTO doctor (doctor_name, doctor_address, doctor_phone, doctor_account, doctor_password, department_id)
+            VALUES ($1, $2, $3, $4, $5, $6) RETURNING doctor_id
+        `;
         const newDoctor = await dataSource.query(insertDoctorQuery, [
             doctorDto.doctorName,
             doctorDto.address,
             doctorDto.phone,
             doctorDto.account,
             hashedPassword,
-            doctorDto.department,
+            doctorDto.department
         ]);
+
+        if (newDoctor.length === 0) {
+            throw new Error("Doctor registration failed");
+        }
 
         return {
             message: "Registered successfully",
-            doctorId: newDoctor[0].id
+            doctorId: newDoctor[0].doctor_id
         };
     }
 }
