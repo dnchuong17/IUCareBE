@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsString} from "class-validator";
+import {IsNotEmpty, IsString, Max} from "class-validator";
 
 export class PatientDto {
     @IsString()
@@ -14,6 +14,7 @@ export class PatientDto {
     major: string;
 
     @IsString()
+    @Max(11)
     @IsNotEmpty()
     phone: string;
 

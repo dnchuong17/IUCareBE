@@ -16,12 +16,10 @@ export class AppointmentEntity extends BaseEntity {
     status: AppointmentConstant;
 
     @IsNumber()
-    @Min(0)
     @Column()
     doctorId: number;
 
     @IsNumber()
-    @Min(0)
     @IsNotEmpty()
     @Column()
     patientId: number;
