@@ -3,13 +3,13 @@ import {DoctorEntity} from "./doctor.entity";
 
 @Entity('department')
 export class DepartmentEntity extends BaseEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({name: 'department_id'})
     id: number;
 
-    @Column()
+    @Column({name: 'department_name',nullable: false, type: 'varchar', length: 255})
     name: string;
 
-    @Column()
+    @Column({name: 'department_number',nullable: false})
     number: number;
 
     @OneToMany(() => DoctorEntity, (doctors) => doctors.department)
