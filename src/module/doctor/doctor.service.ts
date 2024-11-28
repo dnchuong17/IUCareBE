@@ -49,7 +49,7 @@ export class DoctorService {
             doctorDto.phone,
             doctorDto.account,
             hashedPassword,
-            doctorDto.departmentId
+            doctorDto.department,
         ]);
 
         return {

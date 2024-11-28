@@ -4,32 +4,32 @@ import {IsDate, IsNotEmpty, IsNumber, IsString} from "class-validator";
 
 @Entity('medical_record')
 export class Medical_recordEntity extends BaseEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({name: 'medical_record_id'})
     id: number;
 
     @IsNumber()
     @IsNotEmpty()
-    @Column()
+    @Column({name: 'patient_id',nullable: false})
     patientId: number;
 
     @IsNumber()
     @IsNotEmpty()
-    @Column()
+    @Column({name: 'doctor_id',nullable: false})
     doctorId: number;
 
     @IsString()
     @IsNotEmpty()
-    @Column()
+    @Column({name: 'treatment',nullable: false, type: 'varchar', length: 255})
     treatment: string;
 
     @IsString()
     @IsNotEmpty()
-    @Column()
+    @Column({name: 'diagnosis',nullable: false, type: 'varchar', length: 255})
     diagnosis: string;
 
     @IsDate()
     @IsNotEmpty()
-    @Column()
+    @Column({name: 'date',nullable: false})
     date: Date;
 
     @OneToMany(type => MedicineEntity, medicine => medicine.records)
