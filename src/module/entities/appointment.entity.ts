@@ -23,7 +23,4 @@ export class AppointmentEntity extends BaseEntity {
     @IsNotEmpty()
     @Column()
     patientId: number;
-
-    @OneToMany(type => MedicineEntity, medicine => medicine.appointment)
-    medicines: MedicineEntity[];
 }

@@ -1,6 +1,7 @@
 import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {AppointmentEntity} from "./appointment.entity";
 import {IsNotEmpty, IsNumber, IsString} from "class-validator";
+import {Medical_recordEntity} from "./medical_record.entity";
 
 @Entity('medicine')
 export class MedicineEntity extends BaseEntity {
@@ -22,6 +23,6 @@ export class MedicineEntity extends BaseEntity {
     @Column()
     price: string;
 
-    @ManyToOne(() => AppointmentEntity, appointment => appointment.medicines)
-    appointment: AppointmentEntity;
+    @ManyToOne(() => Medical_recordEntity, (record) => record.medicines)
+    records: Medical_recordEntity;
 }

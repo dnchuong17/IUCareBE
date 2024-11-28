@@ -1,5 +1,6 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 import {IsNotEmpty, IsString} from "class-validator";
+import {BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {InsuranceEntity} from "./insurance.entity";
 
 @Entity('patient')
 export class PatientEntity extends BaseEntity {
@@ -30,4 +31,8 @@ export class PatientEntity extends BaseEntity {
     @IsNotEmpty()
     @Column({name: 'student_id'})
     studentId: string;
+
+    @OneToMany(()=> InsuranceEntity, (insurance) => insurance.patient)
+    insurances: InsuranceEntity[];
+
 }

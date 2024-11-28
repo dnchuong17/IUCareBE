@@ -26,7 +26,6 @@ export class AuthService {
             sub: doctor.id,
             account: doctor.account,
             name: doctor.doctorName,
-            departmentId: doctor.department_id
         };
 
         const access_token = await this.jwtService.signAsync(payload, { ////signAsync() function to generate our JWT
