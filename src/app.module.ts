@@ -9,6 +9,8 @@ import {PatientModule} from "./module/patient/patient.module";
 import {AppointmentModule} from "./module/appointment/appointment.module";
 import {InsuranceModule} from "./module/insurance/insurance.module";
 import {DepartmentModule} from "./module/department/department.module";
+import {MedicalRecordModule} from "./module/medical_record/medical_record.module";
+import {MedicineModule} from "./module/medicine/medicine.module";
 
 dotenv.config();
 
@@ -30,6 +32,8 @@ dotenv.config();
       PatientModule,
       AppointmentModule,
       InsuranceModule,
+      MedicalRecordModule,
+      MedicineModule,
       ConfigModule.forRoot({
         isGlobal: true,
       })
