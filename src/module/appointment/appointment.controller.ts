@@ -9,13 +9,13 @@ export class AppointmentController {
 
     @Get()
     getAllAppointment() {
-        return this.appointmentService.getAllAppointment();
+        return this.appointmentService.getAllAppointments();
     }
 
     @Get('check')
     getAppointmentByDate(@Query('date') date: string) {
         const dateObj = new Date(date);
-        return this.appointmentService.getAppointmentByDate(dateObj);
+        return this.appointmentService.getAppointmentsByDate(dateObj);
     }
 
     @Post('create_appointment')
@@ -30,6 +30,6 @@ export class AppointmentController {
 
     @Patch('updateStatus/id')
     updateStatus(@Body() appointmentDto: AppointmentDto,@Param('id') id: number) {
-        return this.appointmentService.updateStatus(appointmentDto, id);
+        return this.appointmentService.updateAppointmentStatus(appointmentDto, id);
     }
 }

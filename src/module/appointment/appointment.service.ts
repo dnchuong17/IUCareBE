@@ -13,73 +13,72 @@ export class AppointmentService {
         private readonly dateUtils: DateUtils) {
     }
 
-    async getAllAppointment() {
-        const appointmentDto = new AppointmentDto();
+    async getAllAppointments() {
         const query = 'SELECT * FROM appointment';
-        return await this.appointmentRepository.query(query)
+        return await this.dataSource.query(query);
     }
 
-    async getAppointmentByDate(date: Date) {
+    async getAppointmentsByDate(date: Date) {
         const dateISO = this.dateUtils.formatDate(date);
-        const query = 'SELECT * FROM appointment where time = $1';
-        return this.dataSource.query(query,[dateISO]);
+        const query = 'SELECT * FROM appointment WHERE appointment_time::DATE = $1';
+        return await this.dataSource.query(query, [dateISO]);
     }
 
     async findAppointment(date: Date) {
         const dateISO = this.dateUtils.formatDate(date);
-        const query = 'SELECT time from appointment where time = $1';
-        const existedApResult = await this.dataSource.query(query,[dateISO])
-        return existedApResult.length > 0;
+        const query = 'SELECT 1 FROM appointment WHERE appointment_time = $1';
+        const result = await this.dataSource.query(query, [dateISO]);
+        return result.length > 0;
     }
 
-    async createAppointment (appointmentDto: AppointmentDto) {
+    async createAppointment(appointmentDto: AppointmentDto) {
         const appointmentTime = this.dateUtils.formatStringToDate(appointmentDto.time);
         const existedAppointment = await this.findAppointment(appointmentTime);
         if (existedAppointment) {
-            return "Please select a different time slot!"
+            return "Please select a different time slot!";
         }
-        try {
-            const newAppointment = await this.appointmentRepository.create({...appointmentDto, time: appointmentTime} )
-            await this.appointmentRepository.save(newAppointment);
-            return 'Create appointment successfully'
-        }
-        catch (error) {
-            throw new BadRequestException(error);
-        }
+
+        const query = `
+        INSERT INTO appointment (appointment_time, "doctorId", "patientId")
+        VALUES ($1, $2, $3) RETURNING appointment_id
+    `;
+        const result = await this.dataSource.query(query, [
+            appointmentTime,
+            appointmentDto.doctorId,
+            appointmentDto.patientId,
+        ]);
+
+        return {
+            message: 'Appointment created successfully',
+            appointmentId: result[0].appointment_id,
+        };
     }
 
-    async fixAppointment (appointmentDto: AppointmentDto, id: number) {
-        try {
-            await this.appointmentRepository.createQueryBuilder()
-                .update(AppointmentEntity)
-                .set({
-                    time: appointmentDto.time
-                })
-                .where('id = :id', {id})
-                .execute()
-            return {
-                message: 'update time successfully',
-            }
-        } catch (error) {
-            throw new BadRequestException(error);
-        }
+    async fixAppointment(appointmentDto: AppointmentDto, id: number) {
+        const appointmentTime = this.dateUtils.formatStringToDate(appointmentDto.time);
+        const dateISO = appointmentTime.toISOString();
+        const query = `
+        UPDATE appointment
+        SET appointment_time = $1
+        WHERE appointment_id = $2
+    `;
+        await this.dataSource.query(query, [dateISO, id]);
+
+        return {
+            message: 'Appointment time updated successfully',
+        };
     }
 
-    async updateStatus(appointmentDto: AppointmentDto, id: number) {
-        try {
-            await this.appointmentRepository.createQueryBuilder()
-                .update(AppointmentEntity)
-                .set({
-                    status: appointmentDto.status
-                })
-                .where('id = :id', {id})
-                .execute()
-            return {
-                message: 'update time successfully',
-            }
-        } catch (error) {
-            throw new BadRequestException(error)
-        }
-    }
+    async updateAppointmentStatus(appointmentDto: AppointmentDto, id: number) {
+        const query = `
+        UPDATE appointment
+        SET appointment_status = $1
+        WHERE appointment_id = $2
+    `;
+        await this.dataSource.query(query, [appointmentDto.status, id]);
 
+        return {
+            message: 'Appointment status updated successfully',
+        };
+    }
 }

@@ -4,7 +4,7 @@ import {PatientEntity} from "../entities/patient.entity";
 export class InsuranceDto {
     @IsString()
     @IsNotEmpty()
-    name: string;
+    insuranceName: string;
 
     @IsString()
     @IsNotEmpty()
@@ -14,5 +14,5 @@ export class InsuranceDto {
     @IsNotEmpty()
     registeredHospital: string;
 
-    patient: PatientEntity;
+    patientId: number;
 }
