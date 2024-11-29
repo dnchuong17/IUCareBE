@@ -7,8 +7,8 @@ import * as process from "process";
 import {AuthGuard} from "./auth.guard";
 import {APP_GUARD} from "@nestjs/core";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {DoctorEntity} from "../module/entities/doctor.entity";
-import {DoctorService} from "../module/doctor/doctor.service";
+import {DoctorEntity} from "../module/doctor/entity/doctor.entity";
+import {DoctorService} from "../module/doctor/service/doctor.service";
 
 
 @Module({

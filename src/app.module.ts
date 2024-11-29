@@ -8,6 +8,7 @@ import {ConfigModule} from "@nestjs/config";
 import {PatientModule} from "./module/patient/patient.module";
 import {AppointmentModule} from "./module/appointment/appointment.module";
 import {InsuranceModule} from "./module/insurance/insurance.module";
+import {DepartmentModule} from "./module/department/department.module";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ dotenv.config();
       synchronize: true,
     }),
       DoctorModule,
+      DepartmentModule,
       AuthModule,
       PatientModule,
       AppointmentModule,

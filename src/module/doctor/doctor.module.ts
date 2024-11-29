@@ -1,8 +1,8 @@
 import {Module} from "@nestjs/common";
-import {DoctorController} from "./doctor.controller";
-import {DoctorService} from "./doctor.service";
+import {DoctorController} from "./controller/doctor.controller";
+import {DoctorService} from "./service/doctor.service";
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {DoctorEntity} from "../entities/doctor.entity";
+import {DoctorEntity} from "./entity/doctor.entity";
 import {InsuranceModule} from "../insurance/insurance.module";
 
 @Module({

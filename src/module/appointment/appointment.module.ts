@@ -1,8 +1,8 @@
 import {Module} from "@nestjs/common";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {AppointmentService} from "./appointment.service";
-import {AppointmentController} from "./appointment.controller";
-import {AppointmentEntity} from "../entities/appointment.entity";
+import {AppointmentService} from "./service/appointment.service";
+import {AppointmentController} from "./controller/appointment.controller";
+import {AppointmentEntity} from "./entity/appointment.entity";
 import {DateUtils} from "../../common/utils/date.utils";
 
 @Module({
