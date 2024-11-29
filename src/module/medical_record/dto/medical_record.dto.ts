@@ -2,23 +2,15 @@ import {IsDate, IsNotEmpty, IsNumber, IsString} from "class-validator";
 
 export class MedicalRecordDto{
 
-    @IsNumber()
-    @IsNotEmpty()
-    patientId: number;
+    patientId?: number;
 
-    @IsNumber()
-    @IsNotEmpty()
-    doctorId: number;
+    doctorId?: number;
 
     @IsString()
-    @IsNotEmpty()
-    treatment: string;
+    treatment?: string;
 
     @IsString()
-    @IsNotEmpty()
-    diagnosis: string;
+    diagnosis?: string;
 
-    @IsDate()
-    @IsNotEmpty()
-    date: Date;
+    date?: Date;
 }

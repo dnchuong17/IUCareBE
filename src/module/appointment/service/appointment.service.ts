@@ -4,13 +4,16 @@ import {AppointmentEntity} from "../entity/appointment.entity";
 import {DataSource, Repository} from "typeorm";
 import {AppointmentDto} from "../dto/appointment.dto";
 import {DateUtils} from "../../../common/utils/date.utils";
+import {MedicalRecordService} from "../../medical_record/service/medical_record.service";
+import {MedicalRecordDto} from "../../medical_record/dto/medical_record.dto";
 
 @Injectable()
 export class AppointmentService {
     constructor(
         @InjectRepository(AppointmentEntity) private readonly appointmentRepository: Repository<AppointmentEntity>,
         private readonly dataSource: DataSource,
-        private readonly dateUtils: DateUtils) {
+        private readonly dateUtils: DateUtils,
+        private readonly medicalRecordService: MedicalRecordService) {
     }
 
     async getAllAppointments() {
@@ -47,6 +50,12 @@ export class AppointmentService {
             appointmentDto.doctorId,
             appointmentDto.patientId,
         ]);
+        const recordDto = new MedicalRecordDto();
+        recordDto.patientId = appointmentDto.patientId;
+        recordDto.doctorId = appointmentDto.doctorId;
+        recordDto.date = appointmentTime;
+
+        await this.medicalRecordService.firstRecord(recordDto);
 
         return {
             message: 'Appointment created successfully',
@@ -80,5 +89,10 @@ export class AppointmentService {
         return {
             message: 'Appointment status updated successfully',
         };
+    }
+    async getAppointmentTime(appointmentId: number) {
+        const query = 'SELECT appointment.appointment_time FROM appointment WHERE appointment_id = $1';
+        const time = await this.dataSource.query(query, [appointmentId]);
+        return time[0].appointment_time;
     }
 }

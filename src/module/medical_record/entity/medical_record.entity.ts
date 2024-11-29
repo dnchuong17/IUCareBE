@@ -10,13 +10,11 @@ export class Medical_recordEntity extends BaseEntity {
     id: number;
 
     @IsString()
-    @IsNotEmpty()
-    @Column({name: 'treatment',nullable: false, type: 'varchar', length: 255})
+    @Column({name: 'treatment',nullable: true, type: 'varchar', length: 255})
     treatment: string;
 
     @IsString()
-    @IsNotEmpty()
-    @Column({name: 'diagnosis',nullable: false, type: 'varchar', length: 255})
+    @Column({name: 'diagnosis',nullable: true, type: 'varchar', length: 255})
     diagnosis: string;
 
     @IsDate()
