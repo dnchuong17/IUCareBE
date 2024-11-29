@@ -2,6 +2,7 @@ import {BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGen
 import {InsuranceEntity} from "./insurance.entity";
 import {IsNotEmpty, IsString} from "class-validator";
 import {DepartmentEntity} from "./department.entity";
+import {AppointmentEntity} from "./appointment.entity";
 @Entity('doctor')
 export class DoctorEntity extends BaseEntity {
     @PrimaryGeneratedColumn({name: 'doctor_id'})
@@ -31,6 +32,9 @@ export class DoctorEntity extends BaseEntity {
     @IsNotEmpty()
     @Column({name: 'doctor_password',nullable: false, type: 'varchar', length: 255})
     password: string;
+
+    @OneToMany(() => AppointmentEntity, appointments => appointments.doctor)
+    appointments: AppointmentEntity[];
 
     @ManyToOne(() => DepartmentEntity, (department) => department.doctors)
     @JoinColumn({ name: 'department_id' })

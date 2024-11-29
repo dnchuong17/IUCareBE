@@ -1,7 +1,9 @@
-import {BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {MedicineEntity} from "./medicine.entity";
 import {AppointmentConstant} from "../../common/constant/appointment.constant";
 import {IsDate, IsNotEmpty, IsNumber, Min} from "class-validator";
+import {DoctorEntity} from "./doctor.entity";
+import {PatientEntity} from "./patient.entity";
 
 @Entity('appointment')
 export class AppointmentEntity extends BaseEntity {
@@ -15,12 +17,9 @@ export class AppointmentEntity extends BaseEntity {
     @Column({name: 'appointment_status',default: AppointmentConstant.APPROVED})
     status: AppointmentConstant;
 
-    @IsNumber()
-    @Column({name: 'doctor_id',nullable: false})
-    doctorId: number;
+    @ManyToOne(()=> DoctorEntity, doctor => doctor.appointments)
+    doctor: DoctorEntity;
 
-    @IsNumber()
-    @IsNotEmpty()
-    @Column({name: 'patient_id',nullable: false})
-    patientId: number;
+  @ManyToOne(()=> PatientEntity, patient => patient.appointments)
+    patient: PatientEntity;
 }
