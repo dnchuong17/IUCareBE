@@ -9,7 +9,7 @@ export class InsuranceEntity extends BaseEntity {
 
     @IsString()
     @IsNotEmpty()
-    @Column({name: 'insurance_number',nullable: false, type: 'varchar', length: 255})
+    @Column({name: 'insurance_number',nullable: false, type: 'varchar', length: 255, unique: true})
     insuranceNumber: string;
 
     @IsString()

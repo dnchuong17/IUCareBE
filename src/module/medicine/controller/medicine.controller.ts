@@ -5,7 +5,7 @@ import {MedicineService} from "../service/medicine.service";
 export class MedicineController {
     constructor(private readonly medicineService: MedicineService) {}
 
-    @Post()
+    @Post('create')
     createMedicine() {
         return this.medicineService.createMedicine();
     }
