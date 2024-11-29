@@ -1,6 +1,4 @@
-import {IsEmail, IsNotEmpty, IsString, Max} from "class-validator";
-
-export class DoctorDto {
+export class ChangeInforDto {
 
     password: string;
 

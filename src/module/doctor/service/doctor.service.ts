@@ -5,7 +5,7 @@ import {Repository} from "typeorm";
 import {DoctorDto} from "../dto/doctor.dto";
 import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import {ChangeInforDto} from "../../dto/change-infor.dto";
+import {ChangeInforDto} from "../dto/change-infor.dto";
 
 @Injectable()
 export class DoctorService {
@@ -103,6 +103,4 @@ export class DoctorService {
         await this.dataSource.query(updateQuery, updateValues);
         return { "message": 'Doctor updated successfully' };
     }
-
-
 }
