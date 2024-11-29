@@ -17,11 +17,6 @@ export class MedicineEntity extends BaseEntity {
     @Column({name: 'dosage',nullable: false, type: 'varchar', length: 255})
     amount: string;
 
-    @IsNumber()
-    @IsNotEmpty()
-    @Column({name: 'price', type: "float"})
-    price: number;
-
     @IsString()
     @IsNotEmpty()
     @Column({name: 'usage',nullable: false, type: 'varchar', length: 255})
