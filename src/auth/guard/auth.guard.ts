@@ -10,7 +10,7 @@ import {JwtService} from "@nestjs/jwt";
 import * as process from "process";
 import { Request } from 'express';
 import {Reflector} from "@nestjs/core";
-import {IS_PUBLIC_KEY} from "./public.decorator";
+import {IS_PUBLIC_KEY} from "../decorator/public.decorator";
 
 
 

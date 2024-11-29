@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { AuthService } from './service/auth.service';
+import { AuthController } from './controller/auth.controller';
 import {DoctorModule} from "../module/doctor/doctor.module";
 import {JwtModule, JwtService} from "@nestjs/jwt";
 import * as process from "process";
-import {AuthGuard} from "./auth.guard";
+import {AuthGuard} from "./guard/auth.guard";
 import {APP_GUARD} from "@nestjs/core";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {DoctorEntity} from "../module/doctor/entity/doctor.entity";

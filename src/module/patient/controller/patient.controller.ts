@@ -1,7 +1,7 @@
 import {Body, Controller, Post} from "@nestjs/common";
 import {PatientService} from "../service/patient.service";
 import {PatientDto} from "../dto/patient.dto";
-import {Public} from "../../../auth/public.decorator";
+import {Public} from "../../../auth/decorator/public.decorator";
 
 @Controller('patient')
 export class PatientController {

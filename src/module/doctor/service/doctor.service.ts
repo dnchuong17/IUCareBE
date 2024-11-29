@@ -1,10 +1,11 @@
-import {Injectable, NotFoundException, UnauthorizedException} from "@nestjs/common";
+import {BadRequestException, Injectable, NotFoundException, UnauthorizedException} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {DoctorEntity} from "../entity/doctor.entity";
 import {Repository} from "typeorm";
 import {DoctorDto} from "../dto/doctor.dto";
 import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import {ChangeInforDto} from "../../dto/change-infor.dto";
 
 @Injectable()
 export class DoctorService {
@@ -56,5 +57,52 @@ export class DoctorService {
             doctorId: newDoctor[0].doctor_id,  // Return the doctor_id of the newly created doctor
         };
     }
+
+    async updateDoctor(doctorId: number, changeInforDto: ChangeInforDto) {
+        const doctorExistsQuery = `SELECT 1 FROM doctor WHERE doctor_id = $1`;
+        const doctorExists = await this.dataSource.query(doctorExistsQuery, [doctorId]);
+
+        if (doctorExists.length === 0) {
+            throw new BadRequestException('Doctor not found');
+        }
+
+        let updateQuery = 'UPDATE doctor SET ';
+        const updateValues: any[] = [];
+        let valueIndex = 1;
+
+        if (changeInforDto.address) {
+            updateQuery += `doctor_address = $${valueIndex}, `;
+            updateValues.push(changeInforDto.address);
+            valueIndex++;
+        }
+
+        if (changeInforDto.phone) {
+            updateQuery += `doctor_phone = $${valueIndex}, `;
+            updateValues.push(changeInforDto.phone);
+            valueIndex++;
+        }
+
+        if (changeInforDto.password) {
+            const hashedPassword = await bcrypt.hash(changeInforDto.password, 10);
+            updateQuery += `doctor_password = $${valueIndex}, `;
+            updateValues.push(hashedPassword);
+            valueIndex++;
+        }
+
+        if (changeInforDto.departmentId) {
+            updateQuery += `department_id = $${valueIndex}, `;
+            updateValues.push(changeInforDto.departmentId);
+            valueIndex++;
+        }
+
+        updateQuery = updateQuery.slice(0, -2);
+
+        updateQuery += ` WHERE doctor_id = $${valueIndex}`;
+        updateValues.push(doctorId);
+
+        await this.dataSource.query(updateQuery, updateValues);
+        return { "message": 'Doctor updated successfully' };
+    }
+
 
 }

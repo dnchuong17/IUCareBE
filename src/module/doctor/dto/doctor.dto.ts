@@ -1,5 +1,4 @@
 import {IsEmail, IsNotEmpty, IsString, Max} from "class-validator";
-import {DepartmentEntity} from "../../department/entity/department.entity";
 
 export class DoctorDto {
     @IsString()
