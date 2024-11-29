@@ -8,10 +8,10 @@ export class MedicineController {
 
     @Public()
     @Get()
-    async getMedicine(@Query("query") query: string): Promise<any> {
-        if (!query) {
-            return []; // Trả về danh sách rỗng nếu query trống
+    async getMedicine(@Query("medicine_name") medicine_name: string){
+        if (!medicine_name) {
+            return [];
         }
-        return this.medicineService.getMedicine(query); // Gọi service để lấy danh sách thuốc
+        return this.medicineService.getMedicine(medicine_name);
     }
 }
