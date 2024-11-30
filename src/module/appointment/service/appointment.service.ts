@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable} from "@nestjs/common";
+import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {AppointmentEntity} from "../entity/appointment.entity";
 import {DataSource, Repository} from "typeorm";
@@ -47,7 +47,6 @@ export class AppointmentService {
             return { message: "Please select a different time slot!" };
         }
 
-        // Insert new appointment
         const query = `
         INSERT INTO appointment (appointment_time, "doctorId", "patientId", appointment_status)
         VALUES ($1, $2, $3, $4) RETURNING appointment_id
@@ -101,10 +100,5 @@ export class AppointmentService {
         return {
             message: 'Appointment status updated successfully',
         };
-    }
-    async getAppointmentTime(appointmentId: number) {
-        const query = 'SELECT appointment.appointment_time FROM appointment WHERE appointment_id = $1';
-        const time = await this.dataSource.query(query, [appointmentId]);
-        return time[0].appointment_time;
     }
 }

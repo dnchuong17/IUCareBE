@@ -14,11 +14,13 @@ export class PatientDto {
     major: string;
 
     @IsString()
-    @Max(11)
+    @Max(10)
     @IsNotEmpty()
     phone: string;
 
     @IsString()
     @IsNotEmpty()
     studentId: string;
+
+    allergy: string;
 }
