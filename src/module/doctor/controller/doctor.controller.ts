@@ -6,7 +6,7 @@ import {ChangeInforDto} from "../dto/change-infor.dto";
 export class DoctorController {
     constructor(private readonly doctorService: DoctorService) {}
 
-    @Get(':doctor_account')
+    @Get('account/:doctor_account')
     findDoctorByAccount(@Param('doctor_account') doctorAccount: string){
         return this.doctorService.findDoctorWithAccount(doctorAccount);
     }
