@@ -14,7 +14,6 @@ export class PatientDto {
     major: string;
 
     @IsString()
-    @Max(10)
     @IsNotEmpty()
     phone: string;
 
