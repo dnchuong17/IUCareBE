@@ -6,6 +6,11 @@ import {ChangeInforDto} from "../dto/change-infor.dto";
 export class DoctorController {
     constructor(private readonly doctorService: DoctorService) {}
 
+    @Get(':doctor_account')
+    findDoctorByAccount(@Param('doctor_account') doctorAccount: string){
+        return this.doctorService.findDoctorWithAccount(doctorAccount);
+    }
+
     @Patch('change_information/:doctor_id')
     changeInformation(@Param('doctor_id') doctorId: number, @Body() changeInforDto: ChangeInforDto) {
         return this.doctorService.updateDoctor(doctorId, changeInforDto);

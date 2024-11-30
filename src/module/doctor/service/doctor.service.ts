@@ -89,12 +89,6 @@ export class DoctorService {
             valueIndex++;
         }
 
-        if (changeInforDto.departmentId) {
-            updateQuery += `department_id = $${valueIndex}, `;
-            updateValues.push(changeInforDto.departmentId);
-            valueIndex++;
-        }
-
         updateQuery = updateQuery.slice(0, -2);
 
         updateQuery += ` WHERE doctor_id = $${valueIndex}`;
