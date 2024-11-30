@@ -10,14 +10,4 @@ export class InsuranceController {
     findAllInsuranceByPatientId(@Param('studentId') studentId: string) {
         return this.insuranceService.findAllInsuranceByStudentId(studentId);
     }
-
-    // @Post('create')
-    // createInsurance(@Body() insuranceDto: InsuranceDto) {
-    //     return this.insuranceService.createInsurance(insuranceDto);
-    // }
-
-    // @Delete('delete/:patientId/:insurance_id')
-    // deleteInsuranceById(@Param('patientId') patientId: number,@Param('insurance_id')insurance_id: number) {
-    //     return this.insuranceService.deleteInsuranceById(patientId,insurance_id);
-    // }
 }
