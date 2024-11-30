@@ -1,4 +1,4 @@
-import {Body, Controller, Param, Patch} from "@nestjs/common";
+import {Body, Controller, Get, Param, Post, Patch} from "@nestjs/common";
 import {DoctorService} from "../service/doctor.service";
 import {ChangeInforDto} from "../dto/change-infor.dto";
 
@@ -10,4 +10,9 @@ export class DoctorController {
     changeInformation(@Param('doctor_id') doctorId: number, @Body() changeInforDto: ChangeInforDto) {
         return this.doctorService.updateDoctor(doctorId, changeInforDto);
     }
+    @Get(':id')
+    getDoctorInformationById(@Param('id') id: number) {
+        return this.doctorService.getDoctorInformationById(id);
+    }
+
 }
