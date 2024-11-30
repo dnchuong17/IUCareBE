@@ -13,6 +13,7 @@ export class DoctorController {
 
     @Patch('change_information/:doctor_id')
     changeInformation(@Param('doctor_id') doctorId: number, @Body() changeInforDto: ChangeInforDto) {
+        console.log(changeInforDto);
         return this.doctorService.updateDoctor(doctorId, changeInforDto);
     }
     @Get(':id')

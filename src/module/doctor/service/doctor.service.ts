@@ -66,24 +66,24 @@ export class DoctorService {
             throw new BadRequestException('Doctor not found');
         }
 
-        let updateQuery = 'UPDATE doctor SET ';
-        const updateValues: any[] = [];
+        let updateQuery = 'UPDATE doctor SET  ';
+        const updateValues = [];
         let valueIndex = 1;
 
-        if (changeInforDto.address) {
+        if (changeInforDto.doctor_address) {
             updateQuery += `doctor_address = $${valueIndex}, `;
-            updateValues.push(changeInforDto.address);
+            updateValues.push(changeInforDto.doctor_address);
             valueIndex++;
         }
 
-        if (changeInforDto.phone) {
+        if (changeInforDto.doctor_phone) {
             updateQuery += `doctor_phone = $${valueIndex}, `;
-            updateValues.push(changeInforDto.phone);
+            updateValues.push(changeInforDto.doctor_phone);
             valueIndex++;
         }
 
-        if (changeInforDto.password) {
-            const hashedPassword = await bcrypt.hash(changeInforDto.password, 10);
+        if (changeInforDto.doctor_password) {
+            const hashedPassword = await bcrypt.hash(changeInforDto.doctor_password, 10);
             updateQuery += `doctor_password = $${valueIndex}, `;
             updateValues.push(hashedPassword);
             valueIndex++;
@@ -92,6 +92,7 @@ export class DoctorService {
         updateQuery = updateQuery.slice(0, -2);
 
         updateQuery += ` WHERE doctor_id = $${valueIndex}`;
+        console.log(updateQuery);
         updateValues.push(doctorId);
 
         await this.dataSource.query(updateQuery, updateValues);

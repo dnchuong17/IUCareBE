@@ -1,10 +1,7 @@
 export class ChangeInforDto {
+    doctor_password: string;
 
-    password: string;
+    doctor_address: string;
 
-    address: string;
-
-    phone: string;
-
-    departmentId: number;
+    doctor_phone: string;
 }
