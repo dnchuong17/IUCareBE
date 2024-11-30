@@ -27,29 +27,39 @@ export class AppointmentService {
         return await this.dataSource.query(query, [dateISO]);
     }
 
-    async findAppointment(date: Date) {
+    async existAppointment(date: Date, doctorId: number, patientId: number) {
         const dateISO = this.dateUtils.formatDate(date);
-        const query = 'SELECT 1 FROM appointment WHERE appointment_time = $1';
-        const result = await this.dataSource.query(query, [dateISO]);
+        const query = `
+        SELECT 1 FROM appointment
+        WHERE appointment_time = $1
+        AND "doctorId" = $2
+        AND "patientId" = $3
+    `;
+        const result = await this.dataSource.query(query, [dateISO, doctorId, patientId]);
         return result.length > 0;
     }
 
     async createAppointment(appointmentDto: AppointmentDto) {
-        const appointmentTime = this.dateUtils.formatStringToDate(appointmentDto.time);
-        const existedAppointment = await this.findAppointment(appointmentTime);
-        if (existedAppointment) {
-            return "Please select a different time slot!";
+        const appointmentTime = this.dateUtils.formatStringToDate(appointmentDto.time); // Ensure time is correctly formatted
+
+        const checkExistedAppointment = await this.existAppointment(appointmentTime, appointmentDto.doctorId, appointmentDto.patientId);
+        if (checkExistedAppointment) {
+            return { message: "Please select a different time slot!" };
         }
 
+        // Insert new appointment
         const query = `
-        INSERT INTO appointment (appointment_time, "doctorId", "patientId")
-        VALUES ($1, $2, $3) RETURNING appointment_id
+        INSERT INTO appointment (appointment_time, "doctorId", "patientId", appointment_status)
+        VALUES ($1, $2, $3, $4) RETURNING appointment_id
     `;
         const result = await this.dataSource.query(query, [
             appointmentTime,
             appointmentDto.doctorId,
             appointmentDto.patientId,
+            appointmentDto.status || 'APPROVED',
         ]);
+
+        // Create first medical record for the appointment
         const recordDto = new MedicalRecordDto();
         recordDto.patientId = appointmentDto.patientId;
         recordDto.doctorId = appointmentDto.doctorId;
@@ -57,11 +67,13 @@ export class AppointmentService {
 
         await this.medicalRecordService.firstRecord(recordDto);
 
+        // Return success response
         return {
             message: 'Appointment created successfully',
-            appointmentId: result[0].appointment_id,
+            appointmentId: result[0].appointment_id, // Return the newly created appointment ID
         };
     }
+
 
     async fixAppointment(appointmentDto: AppointmentDto, id: number) {
         const appointmentTime = this.dateUtils.formatStringToDate(appointmentDto.time);
