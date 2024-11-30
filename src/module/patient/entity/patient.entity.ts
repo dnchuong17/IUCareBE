@@ -34,6 +34,9 @@ export class PatientEntity extends BaseEntity {
     @Column({name: 'student_id',nullable: false, type: 'varchar', length: 255})
     studentId: string;
 
+    @Column({name: 'allergy',nullable:true, type: 'varchar', length: 255})
+    allergy: string;
+
     @OneToMany(()=> InsuranceEntity, (insurance) => insurance.patient)
     @JoinColumn()
     insurances: InsuranceEntity[];
