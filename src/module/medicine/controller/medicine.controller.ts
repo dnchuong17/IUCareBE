@@ -11,6 +11,6 @@ export class MedicineController {
         if (!medicine_name) {
             return [];
         }
-        return this.medicineService.getMedicine(medicine_name);
+        return this.medicineService.searchMedicine(medicine_name);
     }
 }

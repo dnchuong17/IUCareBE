@@ -7,15 +7,24 @@ import {Public} from "../../../auth/decorator/public.decorator";
 export class PatientController {
     constructor(private readonly patientService: PatientService) {
     }
-    @Public()
+
     @Post('create')
     createPatient(@Body() patientDto: PatientDto) {
         return this.patientService.createPatient(patientDto);
     }
 
-    @Public()
+
     @Get('information')
     getPatientInformation(@Query('studentId') studentId: string){
         return this.patientService.getInformationPatient(studentId);
     }
+
+    @Get()
+    async searchPatient(@Query("patientId") patientId: string){
+        if (!patientId) {
+            return [];
+        }
+        return this.patientService.searchPatient(patientId);
+    }
+
 }

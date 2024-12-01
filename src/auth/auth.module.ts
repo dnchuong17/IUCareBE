@@ -9,6 +9,7 @@ import {APP_GUARD} from "@nestjs/core";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {DoctorEntity} from "../module/doctor/entity/doctor.entity";
 import {DoctorService} from "../module/doctor/service/doctor.service";
+import {RedisHelper} from "../module/redis/redis.service";
 
 
 @Module({
@@ -26,7 +27,7 @@ import {DoctorService} from "../module/doctor/service/doctor.service";
   providers: [AuthService, JwtService, DoctorService, {
     provide: APP_GUARD,
     useClass: AuthGuard
-    }],
+    }, RedisHelper],
   controllers: [AuthController],
   exports: [AuthService, ]
 })

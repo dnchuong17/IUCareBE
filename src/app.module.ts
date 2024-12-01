@@ -11,7 +11,8 @@ import {InsuranceModule} from "./module/insurance/insurance.module";
 import {DepartmentModule} from "./module/department/department.module";
 import {MedicalRecordModule} from "./module/medical_record/medical_record.module";
 import {MedicineModule} from "./module/medicine/medicine.module";
-
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-redis-store';
 dotenv.config();
 
 @Module({
@@ -25,6 +26,11 @@ dotenv.config();
       database: process.env.DATABASE_DATABASE,
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
+    }),CacheModule.register({
+      host: process.env.REDIS_HOST,
+      port: +process.env.REDIS_PORT,
+      password: process.env.REDIS_PASSWORD,
+      ttl: +process.env.REDIS_TTL*60*20,
     }),
       DoctorModule,
       DepartmentModule,

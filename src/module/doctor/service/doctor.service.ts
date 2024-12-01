@@ -6,22 +6,33 @@ import {DoctorDto} from "../dto/doctor.dto";
 import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import {ChangeInforDto} from "../dto/change-infor.dto";
+import {RedisHelper} from "../../redis/redis.service";
 
 @Injectable()
 export class DoctorService {
     constructor(@InjectRepository(DoctorEntity)
     private readonly doctorEntityRepository: Repository<DoctorEntity>,
-                private readonly dataSource: DataSource) {
+                private readonly dataSource: DataSource,
+                private readonly redisHelper: RedisHelper) {
     }
 
     async findDoctorWithAccount(doctorAccount: string): Promise<DoctorEntity | null> {
-        const query = `
-    SELECT * FROM doctor WHERE doctor_account = $1
-    `;
+        const cacheKey = `doctor:${doctorAccount}`;
+        const cachedDoctor = await this.redisHelper.get<DoctorEntity>(cacheKey);
 
+        if (cachedDoctor) {
+            console.log('Found doctor from cache');
+            return cachedDoctor;
+        }
+        const query = `SELECT * FROM doctor WHERE doctor_account = $1`;
         const doctor = await this.dataSource.query(query, [doctorAccount]);
 
-        return doctor.length > 0 ? doctor[0] : null;
+        if (doctor.length > 0) {
+            const doctorEntity = doctor[0];
+            await this.redisHelper.set(cacheKey, doctorEntity);
+            return doctorEntity;
+        }
+        return null;
     }
 
     async doctorRegister(doctorDto: DoctorDto) {
@@ -100,6 +111,12 @@ export class DoctorService {
     }
 
     async getDoctorInformationById(id: number) {
+        const cacheKey = `doctorId:${id}`;
+        const cachedDoctor = await this.redisHelper.get(cacheKey);
+
+        if (cachedDoctor) {
+            return cachedDoctor;
+        }
         const query= `
         SELECT 
             doctor.doctor_name,
@@ -112,6 +129,11 @@ export class DoctorService {
         WHERE doctor.doctor_id = $1`;
 
         const doctorInfo = await this.dataSource.query(query, [id]);
-        return doctorInfo.length > 0 ? doctorInfo[0] : null;
+        if (doctorInfo.length > 0) {
+            const doctor = doctorInfo[0];
+            await this.redisHelper.set(cacheKey, doctor);
+            return doctor;
+        }
+        return null;
     }
 }

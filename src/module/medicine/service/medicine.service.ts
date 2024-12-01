@@ -6,13 +6,9 @@ import {MedicineDto} from "../dto/medicine.dto";
 export class MedicineService {
     constructor(private readonly dataSource: DataSource) {
     }
-    async getMedicine(medicineName: string) {
+    async searchMedicine(medicineName: string) {
         const query = 'SELECT name_medicine FROM medicine WHERE name_medicine ILIKE $1';
         const result = await this.dataSource.query(query, [`%${medicineName}%`]);
         return result.map((item) => item.name_medicine);
-    }
-
-    async createMedicine(medicineDto: MedicineDto) {
-
     }
 }
