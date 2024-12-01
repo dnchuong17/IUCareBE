@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {MedicineEntity} from "../../medicine/entity/medicine.entity";
 import {IsDate, IsNotEmpty, IsNumber, IsString} from "class-validator";
 import {DoctorEntity} from "../../doctor/entity/doctor.entity";
@@ -22,7 +22,7 @@ export class Medical_recordEntity extends BaseEntity {
     @Column({name: 'date',nullable: false})
     date: Date;
 
-    @OneToMany(type => MedicineEntity, medicine => medicine.records)
+    @ManyToMany(type => MedicineEntity, medicine => medicine.records)
     medicines: MedicineEntity[];
 
     @ManyToOne(()=> DoctorEntity, doctor => doctor.records)

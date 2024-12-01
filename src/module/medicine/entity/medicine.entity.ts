@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {IsNotEmpty, IsNumber, IsString} from "class-validator";
 import {Medical_recordEntity} from "../../medical_record/entity/medical_record.entity";
 
@@ -22,6 +22,6 @@ export class MedicineEntity extends BaseEntity {
     @Column({name: 'usage',nullable: false, type: 'varchar', length: 255})
     usage: string
 
-    @ManyToOne(() => Medical_recordEntity, (record) => record.medicines)
-    records: Medical_recordEntity;
+    @ManyToMany(() => Medical_recordEntity, (record) => record.medicines)
+    records: Medical_recordEntity[];
 }
