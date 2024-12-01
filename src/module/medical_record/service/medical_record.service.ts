@@ -34,4 +34,20 @@ export class MedicalRecordService {
             id
         ]);
     }
+
+    async getAllRecords(patientId: number) {
+        const query = `SELECT * FROM medical_record LEFT JOIN patient ON medical_record."patientId" = patient.patient_id WHERE patient.patient_id = $1`;
+        return await this.dataSource.query(query, [patientId]);
+    }
+
+    async getPreviousRecord(patientId: number,date: Date){
+        const query = `
+      SELECT * 
+      FROM medical_record 
+      WHERE date < $1 AND "patientId" = $2
+      ORDER BY date DESC 
+    `;
+        const result = await this.dataSource.query(query, [date, patientId]);
+        return result.length ? result[0] : null;
+    }
 }
