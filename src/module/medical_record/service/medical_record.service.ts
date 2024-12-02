@@ -8,12 +8,13 @@ export class MedicalRecordService {
     constructor(private readonly dataSource: DataSource) {}
 
     async firstRecord(recordDto : MedicalRecordDto){
-        const query = `INSERT INTO medical_record ("patientId", "doctorId", treatment, diagnosis, date)
-            VALUES ($1, $2, $3, $4, $5);`
+        const query = `INSERT INTO medical_record ("patientId", "doctorId", treatment, diagnosis, suggest, date)
+            VALUES ($1, $2, $3, $4, $5, $6);`
         return await this.dataSource.query(query,
             [
                 recordDto.patientId,
                 recordDto.doctorId,
+                null,
                 null,
                 null,
                 recordDto.date,
@@ -25,12 +26,14 @@ export class MedicalRecordService {
     async createMedicalRecord( medicalRecordDto: MedicalRecordDto, id: number) {
         const query = `UPDATE medical_record
                        SET "treatment" = $1,
-                           "diagnosis"  = $2
-                       WHERE medical_record_id = $3;`;
+                           "diagnosis"  = $2,
+                           "suggest" = $3,
+                       WHERE medical_record_id = $4;`;
 
         return await this.dataSource.query(query, [
             medicalRecordDto.treatment,
             medicalRecordDto.diagnosis,
+            medicalRecordDto.suggest,
             id
         ]);
     }

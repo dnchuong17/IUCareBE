@@ -1,6 +1,6 @@
-import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn,JoinTable} from "typeorm";
 import {MedicineEntity} from "../../medicine/entity/medicine.entity";
-import {IsDate, IsNotEmpty, IsNumber, IsString} from "class-validator";
+import {IsDate, IsNotEmpty, IsString} from "class-validator";
 import {DoctorEntity} from "../../doctor/entity/doctor.entity";
 import {PatientEntity} from "../../patient/entity/patient.entity";
 
@@ -22,7 +22,21 @@ export class Medical_recordEntity extends BaseEntity {
     @Column({name: 'date',nullable: false})
     date: Date;
 
-    @ManyToMany(type => MedicineEntity, medicine => medicine.records)
+    @Column({name: 'suggest', nullable: true, type: 'varchar', length:255})
+    suggest: string;
+
+    @ManyToMany(type => MedicineEntity, medicines => medicines.records)
+    @JoinTable({
+        name: 'has',
+        joinColumn: {
+            name: 'medical_record_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'medicine_id',
+            referencedColumnName: 'id',
+        },
+    })
     medicines: MedicineEntity[];
 
     @ManyToOne(()=> DoctorEntity, doctor => doctor.records)

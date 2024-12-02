@@ -13,4 +13,6 @@ export class MedicalRecordDto{
     diagnosis?: string;
 
     date?: Date;
+
+    suggest: string;
 }
