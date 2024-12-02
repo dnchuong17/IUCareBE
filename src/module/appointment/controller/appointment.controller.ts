@@ -19,7 +19,6 @@ export class AppointmentController {
         return this.appointmentService.getAppointmentsByDate(dateObj);
     }
 
-    @Public()
     @Post('create_appointment')
     createAppointment(@Body() appointmentDto: AppointmentDto) {
         return this.appointmentService.createAppointment(appointmentDto);

@@ -24,7 +24,7 @@ export class MedicalRecordService {
     }
 
 
-    async createMedicalRecord( medicalRecordDto: MedicalRecordDto, id: number) {
+    async createMedicalRecord(medicalRecordDto: MedicalRecordDto, id: number) {
         const query = `UPDATE medical_record
                        SET "treatment" = $1,
                            "diagnosis"  = $2,
@@ -37,6 +37,12 @@ export class MedicalRecordService {
             medicalRecordDto.suggest,
             id
         ]);
+    }
+
+    async getRecordByAppointmentId(id: number) {
+        const query = 'SELECT record.* FROM medical_record AS record LEFT JOIN appointment AS apm ON record."appointmentId" = apm.appointment_id WHERE apm.appointment_id = $1';
+        const result = await this.dataSource.query(query, [id]);
+        return result[0];
     }
 
     async getAllRecords(patientId: number) {
