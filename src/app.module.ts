@@ -30,6 +30,7 @@ dotenv.config();
       host: process.env.REDIS_HOST,
       port: +process.env.REDIS_PORT,
       password: process.env.REDIS_PASSWORD,
+      tls: true,
       ttl: +process.env.REDIS_TTL*60*20,
     }),
       DoctorModule,
