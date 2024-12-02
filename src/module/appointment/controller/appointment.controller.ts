@@ -1,6 +1,7 @@
 import {Body, Controller, Get, Param, Patch, Post, Query} from "@nestjs/common";
 import {AppointmentService} from "../service/appointment.service";
 import {AppointmentDto} from "../dto/appointment.dto";
+import {Public} from "../../../auth/decorator/public.decorator";
 
 @Controller('appointment')
 export class AppointmentController {
@@ -18,6 +19,7 @@ export class AppointmentController {
         return this.appointmentService.getAppointmentsByDate(dateObj);
     }
 
+    @Public()
     @Post('create_appointment')
     createAppointment(@Body() appointmentDto: AppointmentDto) {
         return this.appointmentService.createAppointment(appointmentDto);

@@ -40,7 +40,7 @@ export class AppointmentService {
     }
 
     async createAppointment(appointmentDto: AppointmentDto) {
-        const appointmentTime = this.dateUtils.formatStringToDate(appointmentDto.time); // Ensure time is correctly formatted
+        const appointmentTime = this.dateUtils.formatStringToDate(appointmentDto.time);
 
         const checkExistedAppointment = await this.existAppointment(appointmentTime, appointmentDto.doctorId, appointmentDto.patientId);
         if (checkExistedAppointment) {
@@ -58,18 +58,17 @@ export class AppointmentService {
             appointmentDto.status || 'APPROVED',
         ]);
 
-        // Create first medical record for the appointment
         const recordDto = new MedicalRecordDto();
         recordDto.patientId = appointmentDto.patientId;
         recordDto.doctorId = appointmentDto.doctorId;
         recordDto.date = appointmentTime;
+        recordDto.appointmentId = result[0].appointment_id;
 
         await this.medicalRecordService.firstRecord(recordDto);
 
-        // Return success response
         return {
             message: 'Appointment created successfully',
-            appointmentId: result[0].appointment_id, // Return the newly created appointment ID
+            appointmentId: result[0].appointment_id,
         };
     }
 

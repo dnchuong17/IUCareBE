@@ -1,8 +1,19 @@
-import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn,JoinTable} from "typeorm";
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    ManyToMany,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    JoinTable,
+    OneToOne,
+    JoinColumn
+} from "typeorm";
 import {MedicineEntity} from "../../medicine/entity/medicine.entity";
 import {IsDate, IsNotEmpty, IsString} from "class-validator";
 import {DoctorEntity} from "../../doctor/entity/doctor.entity";
 import {PatientEntity} from "../../patient/entity/patient.entity";
+import {AppointmentEntity} from "../../appointment/entity/appointment.entity";
 
 @Entity('medical_record')
 export class Medical_recordEntity extends BaseEntity {
@@ -44,4 +55,8 @@ export class Medical_recordEntity extends BaseEntity {
 
     @ManyToOne(() => PatientEntity, patient => patient.records)
     patient: PatientEntity;
+
+    @OneToOne(() => AppointmentEntity, (appointment) => appointment.record)
+    @JoinColumn()
+    appointment: AppointmentEntity;
 }

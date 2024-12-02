@@ -1,4 +1,4 @@
-import {IsDate, IsNotEmpty, IsNumber, IsString} from "class-validator";
+import {IsString} from "class-validator";
 
 export class MedicalRecordDto{
 
@@ -15,4 +15,6 @@ export class MedicalRecordDto{
     date?: Date;
 
     suggest: string;
+
+    appointmentId: number;
 }
