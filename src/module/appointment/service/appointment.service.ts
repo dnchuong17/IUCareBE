@@ -28,21 +28,18 @@ export class AppointmentService {
     }
 
     async existAppointment(date: Date, doctorId: number, patientId: number) {
-        const dateISO = this.dateUtils.formatDate(date);
         const query = `
         SELECT 1 FROM appointment
         WHERE appointment_time = $1
         AND "doctorId" = $2
         AND "patientId" = $3
     `;
-        const result = await this.dataSource.query(query, [dateISO, doctorId, patientId]);
+        const result = await this.dataSource.query(query, [date, doctorId, patientId]);
         return result.length > 0;
     }
 
     async createAppointment(appointmentDto: AppointmentDto) {
-        const appointmentTime = this.dateUtils.formatStringToDate(appointmentDto.time);
-
-        const checkExistedAppointment = await this.existAppointment(appointmentTime, appointmentDto.doctorId, appointmentDto.patientId);
+        const checkExistedAppointment = await this.existAppointment( appointmentDto.time, appointmentDto.doctorId, appointmentDto.patientId);
         if (checkExistedAppointment) {
             return { message: "Please select a different time slot!" };
         }
@@ -52,7 +49,7 @@ export class AppointmentService {
         VALUES ($1, $2, $3, $4) RETURNING appointment_id
     `;
         const result = await this.dataSource.query(query, [
-            appointmentTime,
+            appointmentDto.time,
             appointmentDto.doctorId,
             appointmentDto.patientId,
             appointmentDto.status || 'APPROVED',
@@ -61,7 +58,7 @@ export class AppointmentService {
         const recordDto = new MedicalRecordDto();
         recordDto.patientId = appointmentDto.patientId;
         recordDto.doctorId = appointmentDto.doctorId;
-        recordDto.date = appointmentTime;
+        recordDto.date = appointmentDto.time;
         recordDto.appointmentId = result[0].appointment_id;
 
         await this.medicalRecordService.firstRecord(recordDto);
@@ -74,14 +71,12 @@ export class AppointmentService {
 
 
     async fixAppointment(appointmentDto: AppointmentDto, id: number) {
-        const appointmentTime = this.dateUtils.formatStringToDate(appointmentDto.time);
-        const dateISO = appointmentTime.toISOString();
         const query = `
         UPDATE appointment
         SET appointment_time = $1
         WHERE appointment_id = $2
     `;
-        await this.dataSource.query(query, [dateISO, id]);
+        await this.dataSource.query(query, [appointmentDto, id]);
 
         return {
             message: 'Appointment time updated successfully',

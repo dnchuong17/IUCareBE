@@ -14,7 +14,7 @@ export class AppointmentDto {
 
     @IsString()
     @IsNotEmpty()
-    time: string;
+    time: Date;
 
     status?: AppointmentConstant;
 }
