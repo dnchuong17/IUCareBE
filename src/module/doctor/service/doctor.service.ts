@@ -10,10 +10,10 @@ import {RedisHelper} from "../../redis/redis.service";
 
 @Injectable()
 export class DoctorService {
-    constructor(@InjectRepository(DoctorEntity)
-    private readonly doctorEntityRepository: Repository<DoctorEntity>,
-                private readonly dataSource: DataSource,
-                private readonly redisHelper: RedisHelper) {
+    constructor(
+        @InjectRepository(DoctorEntity) private readonly doctorEntityRepository: Repository<DoctorEntity>,
+        private readonly dataSource: DataSource,
+        private readonly redisHelper: RedisHelper) {
     }
 
     async findDoctorWithAccount(doctorAccount: string): Promise<DoctorEntity | null> {

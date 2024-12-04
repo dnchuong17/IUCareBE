@@ -20,11 +20,11 @@ export class PatientController {
     }
 
     @Get()
-    async searchPatient(@Query("patientId") patientId: string){
-        if (!patientId) {
+    async searchPatient(@Query("studentId") studentId: string){
+        if (!studentId) {
             return [];
         }
-        return this.patientService.searchPatient(patientId);
+        return this.patientService.searchPatient(studentId);
     }
 
 }

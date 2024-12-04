@@ -10,8 +10,8 @@ import {CacheModule} from "@nestjs/cache-manager";
 @Module({
     imports: [TypeOrmModule.forFeature([DoctorEntity]), InsuranceModule, CacheModule.register({ isGlobal: true })],
     controllers: [DoctorController],
-    providers: [DoctorService, DoctorEntity, RedisHelper],
-    exports: [DoctorService, DoctorEntity]
+    providers: [DoctorService, RedisHelper],
+    exports: [DoctorService]
 })
 
 export class DoctorModule {
