@@ -60,6 +60,10 @@ export class PatientService {
     async searchPatient(studentId: string) {
         const query = "SELECT * FROM patient WHERE student_id ILIKE $1";
         const result = await this.dataSource.query(query, [`%${studentId}%`]);
-        return result.map((patient) => patient.student_id);
+
+        return result.map(patient => ({
+            studentId: patient.student_id,
+            patientName: patient.patient_name,
+        }));
     }
 }

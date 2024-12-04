@@ -20,11 +20,19 @@ export class PatientController {
     }
 
     @Get()
-    async searchPatient(@Query("studentId") studentId: string){
+    async searchPatient(@Query('studentId') studentId: string) {
         if (!studentId) {
-            return [];
+            return { message: "studentId is required" };
         }
-        return this.patientService.searchPatient(studentId);
+
+        try {
+            const patients = await this.patientService.searchPatient(studentId);
+            return patients.length
+                ? { data: patients }
+                : { message: 'No patients found' };
+        } catch (error) {
+            return { message: 'An error occurred', error: error.message };
+        }
     }
 
 }
