@@ -62,6 +62,7 @@ export class PatientService {
         const result = await this.dataSource.query(query, [`%${studentId}%`]);
 
         return result.map(patient => ({
+            patientId: patient.patient_id,
             studentId: patient.student_id,
             patientName: patient.patient_name,
         }));

@@ -24,7 +24,6 @@ export class PatientController {
         if (!studentId) {
             return { message: "studentId is required" };
         }
-
         try {
             const patients = await this.patientService.searchPatient(studentId);
             return patients.length
