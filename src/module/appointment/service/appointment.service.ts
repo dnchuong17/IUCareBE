@@ -23,7 +23,7 @@ export class AppointmentService {
 
     async getAppointmentsByDate(date: Date) {
         const dateISO = this.dateUtils.formatDate(date);
-        const query = 'SELECT * FROM appointment WHERE appointment_time::DATE = $1';
+        const query = 'SELECT * FROM appointment WHERE DATE(appointment_time) = $1';
         return await this.dataSource.query(query, [dateISO]);
     }
 
