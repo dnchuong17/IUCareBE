@@ -37,7 +37,7 @@ export class AppointmentService {
         WHERE DATE(appointment.appointment_time) = $1
     `;
         const appointment = await this.dataSource.query(query, [dateISO]);
-        return appointment.length > 0 ? appointment[0] : null;
+        return appointment.length > 0 ? appointment : [];
     }
 
     async existAppointment(date: Date, doctorId: number, patientId: number) {
