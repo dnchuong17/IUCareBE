@@ -89,7 +89,7 @@ export class AppointmentService {
         SET appointment_time = $1
         WHERE appointment_id = $2
     `;
-        await this.dataSource.query(query, [appointmentDto, id]);
+        await this.dataSource.query(query, [appointmentDto.time, id]);
 
         return {
             message: 'Appointment time updated successfully',
