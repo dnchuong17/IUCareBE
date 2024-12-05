@@ -13,20 +13,12 @@ import {MedicalRecordModule} from "./module/medical_record/medical_record.module
 import {MedicineModule} from "./module/medicine/medicine.module";
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
+import dataSource, {dataSourceOptions} from "./config/data-source-option";
 dotenv.config();
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: Number(process.env.DATABASE_PORT),
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_DATABASE,
-      entities: ['dist/**/*.entity{.ts,.js}'],
-      synchronize: true,
-    }),CacheModule.register({
+    TypeOrmModule.forRoot(dataSourceOptions),CacheModule.register({
       host: process.env.REDIS_HOST,
       port: +process.env.REDIS_PORT,
       password: process.env.REDIS_PASSWORD,
