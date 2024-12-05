@@ -23,8 +23,21 @@ export class AppointmentService {
 
     async getAppointmentsByDate(date: Date) {
         const dateISO = this.dateUtils.formatDate(date);
-        const query = 'SELECT * FROM appointment WHERE DATE(appointment_time) = $1';
-        return await this.dataSource.query(query, [dateISO]);
+        const query = `
+        SELECT 
+            appointment.appointment_id,
+            appointment.appointment_time, 
+            appointment.appointment_status,
+            appointment."doctorId",
+            appointment."patientId",
+            patient.patient_name, 
+            patient.student_id 
+        FROM appointment 
+        LEFT JOIN patient ON appointment."patientId" = patient.patient_id 
+        WHERE DATE(appointment.appointment_time) = $1
+    `;
+        const appointment = await this.dataSource.query(query, [dateISO]);
+        return appointment.length > 0 ? appointment[0] : null;
     }
 
     async existAppointment(date: Date, doctorId: number, patientId: number) {
