@@ -12,4 +12,6 @@ export class MedicalRecordDto{
     suggest: string;
 
     appointmentId: number;
+
+    medicines: string[];
 }

@@ -26,13 +26,15 @@ export class MedicalRecordService {
         const query = `UPDATE records
                        SET "treatment" = $1,
                            "diagnosis"  = $2,
-                           "suggest" = $3
-                       WHERE medical_record_id = $4;`;
+                           "suggest" = $3,
+                           "medicines" = $4
+                       WHERE medical_record_id = $5;`;
 
         await this.dataSource.query(query, [
             medicalRecordDto.treatment,
             medicalRecordDto.diagnosis,
             medicalRecordDto.suggest,
+            medicalRecordDto.medicines,
             id
         ]);
         return {
@@ -48,17 +50,18 @@ export class MedicalRecordService {
             r.diagnosis, 
             r.date, 
             r.suggest,
+            m.name_medicine,
             a.appointment_id, 
             a.appointment_time, 
             a.appointment_status, 
             a."doctorId", 
             a."patientId"
         FROM records r 
-        LEFT JOIN appointment a ON r."appointmentId" = a.appointment_id
+        LEFT JOIN appointment a ON r."appointmentId" = a.appointment_id LEFT JOIN medicine_record mr ON r.medical_record_id = mr.medical_record_id LEFT JOIN medicine m ON m.medicine_id = mr.medicine_id
         WHERE a.appointment_id = $1
-        LIMIT 1
     `;
         const result = await this.dataSource.query(query, [id]);
+        console.log(result);
         return result[0];
     }
 

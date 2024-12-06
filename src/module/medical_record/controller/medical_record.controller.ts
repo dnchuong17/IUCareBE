@@ -25,6 +25,7 @@ export class MedicalRecordController {
         return this.medicalRecordService.createMedicalRecord( medicalRecordDto, id);
     }
 
+    @Public()
     @Get('get/:id')
     getRecordByAppointmentId(@Param('id') id: number) {
         return this.medicalRecordService.getRecordByAppointmentId(id);
