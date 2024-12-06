@@ -2,7 +2,6 @@ import {IsNotEmpty, IsString} from "class-validator";
 import {BaseEntity, Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {InsuranceEntity} from "../../insurance/entity/insurance.entity";
 import {AppointmentEntity} from "../../appointment/entity/appointment.entity";
-import {Medical_recordEntity} from "../../medical_record/entity/medical_record.entity";
 
 @Entity('patient')
 export class PatientEntity extends BaseEntity {
@@ -40,9 +39,6 @@ export class PatientEntity extends BaseEntity {
     @OneToMany(()=> InsuranceEntity, (insurance) => insurance.patient)
     @JoinColumn()
     insurances: InsuranceEntity[];
-
-    @OneToMany(() => Medical_recordEntity, records => records.patient)
-    records: Medical_recordEntity[];
 
     @OneToMany(() => AppointmentEntity, appointments => appointments.patient)
     appointments: AppointmentEntity[];

@@ -11,11 +11,9 @@ import {
 } from "typeorm";
 import {MedicineEntity} from "../../medicine/entity/medicine.entity";
 import {IsDate, IsNotEmpty, IsString} from "class-validator";
-import {DoctorEntity} from "../../doctor/entity/doctor.entity";
-import {PatientEntity} from "../../patient/entity/patient.entity";
 import {AppointmentEntity} from "../../appointment/entity/appointment.entity";
 
-@Entity('medical_record')
+@Entity('records')
 export class Medical_recordEntity extends BaseEntity {
     @PrimaryGeneratedColumn({name: 'medical_record_id'})
     id: number;
@@ -38,7 +36,7 @@ export class Medical_recordEntity extends BaseEntity {
 
     @ManyToMany(type => MedicineEntity, medicines => medicines.records)
     @JoinTable({
-        name: 'has',
+        name: 'medicine_record',
         joinColumn: {
             name: 'medical_record_id',
             referencedColumnName: 'id',
@@ -49,12 +47,6 @@ export class Medical_recordEntity extends BaseEntity {
         },
     })
     medicines: MedicineEntity[];
-
-    @ManyToOne(()=> DoctorEntity, doctor => doctor.records)
-    doctor: DoctorEntity;
-
-    @ManyToOne(() => PatientEntity, patient => patient.records)
-    patient: PatientEntity;
 
     @OneToOne(() => AppointmentEntity, (appointment) => appointment.record)
     @JoinColumn()
