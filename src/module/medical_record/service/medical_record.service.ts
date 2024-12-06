@@ -23,24 +23,36 @@ export class MedicalRecordService {
 
 
     async createMedicalRecord(medicalRecordDto: MedicalRecordDto, id: number) {
-        const query = `UPDATE records
-                       SET "treatment" = $1,
-                           "diagnosis"  = $2,
-                           "suggest" = $3,
-                           "medicines" = $4
-                       WHERE medical_record_id = $5;`;
-
-        await this.dataSource.query(query, [
+        // Update basic medical record details
+        const updateRecordQuery = `
+        UPDATE records
+        SET 
+            "treatment" = $1,
+            "diagnosis" = $2,
+            "suggest"   = $3
+        WHERE medical_record_id = $4;
+    `;
+        await this.dataSource.query(updateRecordQuery, [
             medicalRecordDto.treatment,
             medicalRecordDto.diagnosis,
             medicalRecordDto.suggest,
-            medicalRecordDto.medicines,
-            id
+            id,
         ]);
-        return {
-            message: `update records with id: ${id} successfully`
+
+        const insertMedicinesQuery = `
+        INSERT INTO medicine_record (medical_record_id, medicine_id)
+        VALUES ($1, $2);
+    `;
+
+        for (const medicine of medicalRecordDto.medicines) {
+            await this.dataSource.query(insertMedicinesQuery, [id, medicine]);
         }
+
+        return {
+            message: `Medical record with ID ${id} updated successfully.`,
+        };
     }
+
 
     async getRecordByAppointmentId(id: number) {
         const query = `
