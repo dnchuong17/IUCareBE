@@ -33,7 +33,7 @@ export class AppointmentService {
             patient.patient_name, 
             patient.student_id 
         FROM appointment 
-        LEFT JOIN patient ON appointment."patientId" = patient.patient_id 
+        LEFT JOIN patient ON appointment."patientId" = patient.patient_id
         WHERE DATE(appointment.appointment_time) = $1
     `;
         const appointment = await this.dataSource.query(query, [dateISO]);

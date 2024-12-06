@@ -29,7 +29,7 @@ export class AppointmentController {
         return this.appointmentService.fixAppointment(appointmentDto, id);
     }
 
-    @Patch('updateStatus/id')
+    @Patch('updateStatus/:id')
     updateStatus(@Body() appointmentDto: AppointmentDto,@Param('id') id: number) {
         return this.appointmentService.updateAppointmentStatus(appointmentDto, id);
     }
