@@ -9,7 +9,6 @@ export class AppointmentDto {
 
     patientId: number;
 
-    @IsNotEmpty()
     time: Date;
 
     status?: AppointmentConstant;
