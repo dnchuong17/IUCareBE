@@ -6,6 +6,7 @@ import {Public} from "../../../auth/decorator/public.decorator";
 export class MedicineController {
     constructor(private readonly medicineService: MedicineService) {}
 
+    @Public()
     @Get()
     async getMedicine(@Query("medicine_name") medicine_name: string){
         if (!medicine_name) {

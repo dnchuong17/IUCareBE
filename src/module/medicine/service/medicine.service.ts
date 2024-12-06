@@ -7,7 +7,14 @@ export class MedicineService {
     constructor(private readonly dataSource: DataSource) {
     }
     async searchMedicine(medicineName: string) {
-        const query = 'SELECT name_medicine FROM medicine WHERE name_medicine ILIKE $1';
+        const query = `
+        SELECT 
+            medicine_id, name_medicine 
+        FROM 
+            medicine 
+        WHERE 
+        name_medicine ILIKE $1
+        `;
         const result = await this.dataSource.query(query, [`%${medicineName}%`]);
         return result.map((item) => ({
             id: item.medicine_id,
