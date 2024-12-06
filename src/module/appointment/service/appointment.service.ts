@@ -69,8 +69,6 @@ export class AppointmentService {
         ]);
 
         const recordDto = new MedicalRecordDto();
-        recordDto.patientId = appointmentDto.patientId;
-        recordDto.doctorId = appointmentDto.doctorId;
         recordDto.date = appointmentDto.time;
         recordDto.appointmentId = result[0].appointment_id;
 

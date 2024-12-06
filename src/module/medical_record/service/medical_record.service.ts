@@ -94,6 +94,10 @@ export class MedicalRecordService {
 
     async getPreviousRecord(patientId: number,date: Date){
         const query = `
+      SELECT * 
+      FROM records LEFT JOIN appointment ON records."appointmentId" = appointment.appointment_id
+      WHERE date < $1 AND "patientId" = $2
+      ORDER BY date DESC 
           SELECT 
           r.medical_record_id,
           r.treatment,
