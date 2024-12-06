@@ -57,16 +57,36 @@ export class MedicalRecordService {
             a."doctorId", 
             a."patientId"
         FROM records r 
-        LEFT JOIN appointment a ON r."appointmentId" = a.appointment_id LEFT JOIN medicine_record mr ON r.medical_record_id = mr.medical_record_id LEFT JOIN medicine m ON m.medicine_id = mr.medicine_id
+        LEFT JOIN appointment a ON r."appointmentId" = a.appointment_id
+        LEFT JOIN medicine_record mr ON r.medical_record_id = mr.medical_record_id
+        LEFT JOIN medicine m ON m.medicine_id = mr.medicine_id
         WHERE a.appointment_id = $1
     `;
         const result = await this.dataSource.query(query, [id]);
-        console.log(result);
-        return result[0];
+        return result.length > 0 ? result[0] : null;
     }
 
 
     async getAllRecords(patientId: number) {
+        const query = `
+        SELECT 
+            d.doctor_name AS doctorName, 
+            r.treatment, 
+            r.diagnosis, 
+            r.date, 
+            a.appointment_id
+        FROM records r
+        LEFT JOIN appointment a ON r."appointmentId" = a.appointment_id
+        LEFT JOIN doctor d ON a."doctorId" = d.doctor_id
+        LEFT JOIN patient p ON a."patientId" = p.patient_id
+        WHERE p.patient_id = $1
+    `;
+        const result = await this.dataSource.query(query, [patientId]);
+        return result.length > 0 ? result : null;
+    }
+
+
+    async recordDetails(appointmentId: number) {
         const query = `
         SELECT 
             p.patient_name,
@@ -89,9 +109,10 @@ export class MedicalRecordService {
         LEFT JOIN insurance i ON i."patientId" = p.patient_id
         LEFT JOIN medicine_record mr ON r.medical_record_id = mr.medical_record_id
         LEFT JOIN medicine m ON mr.medicine_id = m.medicine_id
-        WHERE p.patient_id = $1
+        WHERE a.appointment_id = $1
     `;
-        return await this.dataSource.query(query, [patientId]);
+     const result = await this.dataSource.query(query, [appointmentId])
+        return result.length > 0 ? result[0] : null;
     }
 
 

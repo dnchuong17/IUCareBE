@@ -9,6 +9,8 @@ export class MedicalRecordController {
     constructor(private readonly medicalRecordService: MedicalRecordService,
     private readonly dateUtils: DateUtils) {}
 
+
+    @Public()
     @Get('records/:id')
     getAllRecord(@Param('id') id: number) {
         return this.medicalRecordService.getAllRecords(id);
