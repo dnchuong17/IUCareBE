@@ -4,11 +4,14 @@ import {Type} from "class-transformer";
 
 export class AppointmentDto {
 
+    @IsNotEmpty()
     doctorId: number;
 
 
+    @IsNotEmpty()
     patientId: number;
 
+    @IsNotEmpty()
     time: Date;
 
     status?: AppointmentConstant;
