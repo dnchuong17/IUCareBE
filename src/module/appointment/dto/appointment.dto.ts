@@ -12,7 +12,6 @@ export class AppointmentDto {
     @IsNotEmpty()
     patientId: number;
 
-    @IsString()
     @IsNotEmpty()
     time: Date;
 
