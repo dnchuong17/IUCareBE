@@ -91,9 +91,25 @@ export class MedicalRecordService {
         LEFT JOIN medicine m ON m.medicine_id = mr.medicine_id
         WHERE a.appointment_id = $1
     `;
+
         const result = await this.dataSource.query(query, [id]);
-        return result.length > 0 ? result[0] : null;
+
+        if (result.length > 0) {
+            // Extract the first row's details excluding name_medicine
+            const { name_medicine, ...otherFields } = result[0];
+
+            // Gather all medicines into an array
+            const medicines = result.map((row: { name_medicine: string }) => row.name_medicine);
+
+            return {
+                ...otherFields,
+                medicines
+            };
+        }
+
+        return null;
     }
+
 
 
     async getAllRecords(patientId: number) {
