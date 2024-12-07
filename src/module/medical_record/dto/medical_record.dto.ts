@@ -1,4 +1,4 @@
-import {IsString} from "class-validator";
+import {IsArray, IsNumber, IsOptional, IsString} from "class-validator";
 
 export class MedicalRecordDto{
     @IsString()
@@ -13,5 +13,8 @@ export class MedicalRecordDto{
 
     appointmentId: number;
 
-    medicines: number[];
+    @IsOptional()
+    @IsArray()
+    @IsNumber({}, { each: true }) // Each item must be a number
+    medicines?: number[];
 }

@@ -22,36 +22,56 @@ export class MedicalRecordService {
     }
 
 
+    // Medical Record Service
     async createMedicalRecord(medicalRecordDto: MedicalRecordDto, id: number) {
-        // Update basic medical record details
-        const updateRecordQuery = `
+        const queryRunner = this.dataSource.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            // Update medical record details
+            const updateRecordQuery = `
         UPDATE records
         SET 
-            "treatment" = $1,
-            "diagnosis" = $2,
-            "suggest"   = $3
-        WHERE medical_record_id = $4;
-    `;
-        await this.dataSource.query(updateRecordQuery, [
-            medicalRecordDto.treatment,
-            medicalRecordDto.diagnosis,
-            medicalRecordDto.suggest,
-            id,
-        ]);
+            treatment = $1,
+            diagnosis = $2,
+            suggest = $3
+        WHERE medical_record_id = $4
+        `;
+            await queryRunner.query(updateRecordQuery, [
+                medicalRecordDto.treatment,
+                medicalRecordDto.diagnosis,
+                medicalRecordDto.suggest,
+                id,
+            ]);
 
-        const insertMedicinesQuery = `
-        INSERT INTO medicine_record (medical_record_id, medicine_id)
-        VALUES ($1, $2);
-    `;
+            // Add medicines to the medical record
+            if (medicalRecordDto.medicines?.length) {
+                const values = medicalRecordDto.medicines
+                    .map((medicineId) => `(${id}, ${medicineId})`)
+                    .join(",");
 
-        for (const medicineId of medicalRecordDto.medicines) {
-            await this.dataSource.query(insertMedicinesQuery, [id, medicineId]);
+                const insertMedicinesQuery = `
+            INSERT INTO medicine_record (medical_record_id, medicine_id)
+            VALUES ${values}
+            ON CONFLICT DO NOTHING;
+            `;
+                await queryRunner.query(insertMedicinesQuery);
+            }
+
+            await queryRunner.commitTransaction();
+
+            return { message: `Medical record ${id} updated successfully.` };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            console.error("Error updating medical record:", error.message);
+            throw new Error("Failed to update the medical record.");
+        } finally {
+            await queryRunner.release();
         }
-
-        return {
-            message: `Medical record with ID ${id} updated successfully.`,
-        };
     }
+
 
 
     async getRecordByAppointmentId(id: number) {
