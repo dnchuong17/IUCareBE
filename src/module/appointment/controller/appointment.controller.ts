@@ -14,9 +14,8 @@ export class AppointmentController {
     }
 
     @Get('check')
-    getAppointmentByDate(@Query('date') date: string) {
-        const dateObj = new Date(date);
-        return this.appointmentService.getAppointmentsByDate(dateObj);
+    getAppointmentByDate(@Query('date') date: string | Date) {
+        return this.appointmentService.getAppointmentsByDate(date);
     }
 
     @Post('create_appointment')

@@ -21,8 +21,11 @@ export class AppointmentService {
         return await this.dataSource.query(query);
     }
 
-    async getAppointmentsByDate(date: Date) {
-        const dateISO = this.dateUtils.formatDate(date);
+    async getAppointmentsByDate(date:string | Date) {
+        if (typeof date === 'string') {
+            date = new Date(date);
+        }
+        const dateISO =  this.dateUtils.formatDate(date);
         const query = `
         SELECT 
             appointment.appointment_id,
@@ -86,6 +89,7 @@ export class AppointmentService {
         UPDATE appointment
         SET appointment_time = $1
         WHERE appointment_id = $2
+
     `;
         await this.dataSource.query(query, [appointmentDto.time, id]);
 
