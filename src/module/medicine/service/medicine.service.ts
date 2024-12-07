@@ -1,6 +1,7 @@
 import {Injectable} from "@nestjs/common";
 import {DataSource} from "typeorm";
 import {MedicineDto} from "../dto/medicine.dto";
+import {query} from "express";
 
 @Injectable()
 export class MedicineService {
@@ -22,19 +23,29 @@ export class MedicineService {
         }));
     }
 
-    async addMedicinesToRecord(medicalRecordId: number, medicineIds: number[]) {
-        const insertMedicinesQuery = `
-        INSERT INTO medicine_record (medical_record_id, medicine_id)
-        VALUES ($1, $2)
-    `;
-
-        for (const medicineId of medicineIds) {
-            await this.dataSource.query(insertMedicinesQuery, [medicalRecordId, medicineId]);
+    async addMedicinesToRecord(medical_record_id: number, medicine_ids: number[]) {
+        if (!medicine_ids || medicine_ids.length === 0) {
+            throw new Error("No medicines to add.");
         }
 
-        return {
-            message: `Medicines added to medical record ID ${medicalRecordId} successfully.`,
-        };
+        const values = medicine_ids.map((medicine_id) => `(${medical_record_id}, ${medicine_id})`).join(",");
+
+        const insertMedicinesQuery = `
+        INSERT INTO medicine_record (medical_record_id, medicine_id)
+        VALUES ${values};
+    `;
+
+        try {
+            await this.dataSource.query(insertMedicinesQuery);
+            return {
+                message: `Medicines added to medical record ID ${medical_record_id} successfully.`,
+            };
+        } catch (error) {
+            console.error("Error inserting medicines into medicine_record:", error.message);
+            throw new Error("Failed to add medicines to the medical record.");
+        }
     }
+
+
 
 }
