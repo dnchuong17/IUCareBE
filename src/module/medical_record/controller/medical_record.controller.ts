@@ -37,4 +37,5 @@ export class MedicalRecordController {
     getRecordDetail(@Param('id') id: number) {
         return this.medicalRecordService.recordDetails(id);
     }
+
 }
