@@ -44,8 +44,8 @@ export class MedicalRecordService {
         VALUES ($1, $2);
     `;
 
-        for (const medicine of medicalRecordDto.medicines) {
-            await this.dataSource.query(insertMedicinesQuery, [id, medicine]);
+        for (const medicineId of medicalRecordDto.medicines) {
+            await this.dataSource.query(insertMedicinesQuery, [id, medicineId]);
         }
 
         return {

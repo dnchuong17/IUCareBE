@@ -13,5 +13,5 @@ export class MedicalRecordDto{
 
     appointmentId: number;
 
-    medicines: string[];
+    medicines: number[];
 }
