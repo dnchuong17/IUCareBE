@@ -156,24 +156,21 @@ export class MedicalRecordService {
         LEFT JOIN medicine m ON mr.medicine_id = m.medicine_id
         WHERE a.appointment_id = $1
     `;
-
         const result = await this.dataSource.query(query, [appointmentId]);
 
         if (result.length > 0) {
-            // Extract nameMedicines only without duplication
-            const nameMedicines = result.map((row: { name_medicine: string }) => row.name_medicine);
+            // Create the base object from the first record
+            const record = { ...result[0] };
 
-            // Exclude name_medicine from otherFields
-            const { name_medicine, ...otherFields } = result[0];
+            // Collect all medicines into an array and store them under `name_medicine`
+            record.name_medicine = result.map((row: { name_medicine: string }) => row.name_medicine).filter((value, index, self) => self.indexOf(value) === index);
 
-            return {
-                otherFields,
-                nameMedicines
-            };
+            return record;
         }
 
-        return { otherFields: null, nameMedicines: [] };
+        return null;
     }
+
 
     async getPreviousRecord(patientId: number,date: Date){
         const query = `
