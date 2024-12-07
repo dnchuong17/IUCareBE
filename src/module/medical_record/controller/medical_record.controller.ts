@@ -32,4 +32,9 @@ export class MedicalRecordController {
     getRecordByAppointmentId(@Param('id') id: number) {
         return this.medicalRecordService.getRecordByAppointmentId(id);
     }
+
+    @Get('get/detail/:id')
+    getRecordDetail(@Param('id') id: number) {
+        return this.medicalRecordService.recordDetails(id);
+    }
 }

@@ -82,7 +82,7 @@ export class MedicalRecordService {
     async getAllRecords(patientId: number) {
         const query = `
         SELECT 
-            d.doctor_name AS doctorName, 
+            d.doctor_name,
             r.treatment, 
             r.diagnosis, 
             r.date, 
