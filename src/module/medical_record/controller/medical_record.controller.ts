@@ -33,6 +33,8 @@ export class MedicalRecordController {
         return this.medicalRecordService.getRecordByAppointmentId(id);
     }
 
+
+    @Public()
     @Get('get/detail/:id')
     getRecordDetail(@Param('id') id: number) {
         return this.medicalRecordService.recordDetails(id);

@@ -21,8 +21,6 @@ export class MedicalRecordService {
         );
     }
 
-
-    // Medical Record Service
     async createMedicalRecord(medicalRecordDto: MedicalRecordDto, id: number) {
         const queryRunner = this.dataSource.createQueryRunner();
 
@@ -30,7 +28,6 @@ export class MedicalRecordService {
         await queryRunner.startTransaction();
 
         try {
-            // Update medical record details
             const updateRecordQuery = `
         UPDATE records
         SET 
@@ -143,10 +140,24 @@ export class MedicalRecordService {
         LEFT JOIN medicine m ON mr.medicine_id = m.medicine_id
         WHERE a.appointment_id = $1
     `;
-     const result = await this.dataSource.query(query, [appointmentId])
-        return result.length > 0 ? result[0] : null;
-    }
 
+        const result = await this.dataSource.query(query, [appointmentId]);
+
+        if (result.length > 0) {
+            // Extract nameMedicines only without duplication
+            const nameMedicines = result.map((row: { name_medicine: string }) => row.name_medicine);
+
+            // Exclude name_medicine from otherFields
+            const { name_medicine, ...otherFields } = result[0];
+
+            return {
+                otherFields,
+                nameMedicines
+            };
+        }
+
+        return { otherFields: null, nameMedicines: [] };
+    }
 
     async getPreviousRecord(patientId: number,date: Date){
         const query = `

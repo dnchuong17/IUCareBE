@@ -1,6 +1,6 @@
 import {Body, Controller, Get, Param, Post, Request} from '@nestjs/common';
 
-import {SignInDto} from "../../common/constant/signIn.dto";
+import {SignInDto} from "../../module/doctor/dto/signIn.dto";
 import {DoctorDto} from "../../module/doctor/dto/doctor.dto";
 import {DoctorService} from "../../module/doctor/service/doctor.service";
 import {Public} from "../decorator/public.decorator";
