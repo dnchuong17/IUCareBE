@@ -16,6 +16,7 @@ export class MedicalRecordController {
         return this.medicalRecordService.getAllRecords(id);
     }
 
+    @Public()
     @Get('previous_record/:id')
     getPreviousRecord(@Param('id')id: number,@Query('date') date: string) {
         const formatDate = this.dateUtils.formatStringToDate(date);
