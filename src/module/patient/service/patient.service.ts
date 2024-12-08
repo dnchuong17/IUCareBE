@@ -18,8 +18,6 @@ export class PatientService {
         return patientInfor[0];
     }
 
-    async
-
     async findStudentBySID(studentId: string) {
         const query = `SELECT *
                        FROM patient
@@ -39,9 +37,7 @@ export class PatientService {
             INSERT INTO patient (patient_name, patient_address, patient_major, patient_phone, student_id,  allergy)
             VALUES ($1, $2, $3, $4, $5, $6) RETURNING patient_id
         `;
-        console.log(insertPatientQuery);
 
-        console.log(patientDto);
         const result = await this.dataSource.query(insertPatientQuery, [
             patientDto.name,
             patientDto.address,
