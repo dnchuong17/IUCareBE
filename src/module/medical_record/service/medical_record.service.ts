@@ -71,23 +71,26 @@ export class MedicalRecordService {
 
     async getRecordByAppointmentId(id: number) {
         const query = `
-            SELECT r.medical_record_id,
-                   r.treatment,
-                   r.diagnosis,
-                   r.date,
-                   r.suggest,
-                   m.name_medicine,
-                   a.appointment_id,
-                   a.appointment_time,
-                   a.appointment_status,
-                   a."doctorId",
-                   a."patientId"
-            FROM records r
-                     LEFT JOIN appointment a ON r."appointmentId" = a.appointment_id
-                     LEFT JOIN medicine_record mr ON r.medical_record_id = mr.medical_record_id
-                     LEFT JOIN medicine m ON m.medicine_id = mr.medicine_id
-            WHERE a.appointment_id = $1
-        `;
+        SELECT 
+            r.medical_record_id,
+            r.treatment,
+            r.diagnosis,
+            r.date,
+            r.suggest,
+            m.name_medicine,
+            a.appointment_id,
+            a.appointment_time,
+            a.appointment_status,
+            a."doctorId",
+            a."patientId",
+            p.student_id
+        FROM records r
+        LEFT JOIN appointment a ON r."appointmentId" = a.appointment_id
+        LEFT JOIN patient p ON a."patientId" = p.patient_id
+        LEFT JOIN medicine_record mr ON r.medical_record_id = mr.medical_record_id
+        LEFT JOIN medicine m ON m.medicine_id = mr.medicine_id
+        WHERE a.appointment_id = $1
+    `;
 
         const result = await this.dataSource.query(query, [id]);
 
