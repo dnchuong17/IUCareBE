@@ -174,10 +174,7 @@ export class MedicalRecordService {
 
     async getPreviousRecord(patientId: number,date: Date){
         const query = `
-      SELECT * 
-      FROM records LEFT JOIN appointment ON records."appointmentId" = appointment.appointment_id
-      WHERE date < $1 AND "patientId" = $2
-      ORDER BY date DESC 
+    
           SELECT 
           r.medical_record_id,
           r.treatment,
@@ -202,6 +199,6 @@ export class MedicalRecordService {
           ORDER BY date DESC 
     `;
         const result = await this.dataSource.query(query, [date, patientId]);
-        return result.length ? result[0] : null;
+        return result.length > 0 ? result[0] : null;
     }
 }
