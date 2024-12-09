@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors( {
-    origin: "https://iuhealthcare.vercel.app",
+    origin: ["http://localhost:5173","https://iuhealthcare.vercel.app"],
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
   });
