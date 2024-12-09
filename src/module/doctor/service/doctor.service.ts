@@ -41,31 +41,32 @@ export class DoctorService {
             return { message: 'Account already exists' };
         }
 
-        const departmentCheckQuery = `SELECT 1 FROM department WHERE department_id = $1`;
-        const departmentExists = await this.dataSource.query(departmentCheckQuery, [doctorDto.departmentId]);
+        const departmentQuery = `SELECT department_id FROM department WHERE department_number = $1`;
+        const department = await this.dataSource.query(departmentQuery, [doctorDto.departmentNumber]);
 
-        if (departmentExists.length === 0) {
+        if (department.length === 0) {
             throw new Error("Department does not exist");
         }
+
+        const departmentId = department[0].department_id;
 
         const hashedPassword = await bcrypt.hash(doctorDto.password, 10);
 
         const insertDoctorQuery = `
         INSERT INTO doctor (doctor_name, doctor_address, doctor_phone, doctor_account, doctor_password, department_id)
-        VALUES ($1, $2, $3, $4, $5, $6) RETURNING doctor_id
-    `;
+        VALUES ($1, $2, $3, $4, $5, $6)`;
         const newDoctor = await this.dataSource.query(insertDoctorQuery, [
             doctorDto.doctorName,
             doctorDto.address,
             doctorDto.phone,
             doctorDto.account,
             hashedPassword,
-            doctorDto.departmentId,
+            departmentId,
         ]);
 
         return {
             message: "Registered successfully",
-            doctorId: newDoctor[0].doctor_id,  // Return the doctor_id of the newly created doctor
+            doctorId: newDoctor[0].doctor_id,
         };
     }
 

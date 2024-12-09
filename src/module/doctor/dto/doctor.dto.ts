@@ -22,5 +22,5 @@ export class DoctorDto {
     @IsNotEmpty()
     phone: string;
 
-    departmentId: number;
+    departmentNumber: number;
 }
