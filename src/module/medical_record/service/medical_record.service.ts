@@ -2,10 +2,12 @@ import {Injectable} from "@nestjs/common";
 import {MedicalRecordDto} from "../dto/medical_record.dto";
 import { DataSource } from 'typeorm';
 import {AppointmentService} from "../../appointment/service/appointment.service";
+import {RedisHelper} from "../../redis/redis.service";
 
 @Injectable()
 export class MedicalRecordService {
-    constructor(private readonly dataSource: DataSource) {
+    constructor(private readonly dataSource: DataSource,
+                private readonly redisHelper : RedisHelper) {
     }
 
     async firstRecord(recordDto: MedicalRecordDto) {
@@ -42,8 +44,6 @@ export class MedicalRecordService {
                 medicalRecordDto.suggest,
                 id,
             ]);
-
-            // Add medicines to the medical record
             if (medicalRecordDto.medicines?.length) {
                 const values = medicalRecordDto.medicines
                     .map((medicineId) => `(${id}, ${medicineId})`)
@@ -70,6 +70,8 @@ export class MedicalRecordService {
 
 
     async getRecordByAppointmentId(id: number) {
+        const cacheKey = `appointmentId:${id}`;
+        const cachedRecord = await this.redisHelper.get(cacheKey);
         const query = `
         SELECT 
             r.medical_record_id,
@@ -95,10 +97,10 @@ export class MedicalRecordService {
         const result = await this.dataSource.query(query, [id]);
 
         if (result.length > 0) {
-            // Extract the first row's details excluding name_medicine
             const { name_medicine, ...otherFields } = result[0];
 
-            // Gather all medicines into an array
+            await  this.redisHelper.set(cacheKey, {name_medicine, ...otherFields});
+
             const medicines = result.map((row: { name_medicine: string }) => row.name_medicine);
 
             return {
@@ -156,10 +158,7 @@ export class MedicalRecordService {
         const result = await this.dataSource.query(query, [appointmentId]);
 
         if (result.length > 0) {
-            // Create the base object from the first record
             const record = { ...result[0] };
-
-            // Collect all medicines into an array and store them under `name_medicine`
             record.name_medicine = result.map((row: {
                 name_medicine: string
             }) => row.name_medicine).filter((value, index, self) => self.indexOf(value) === index);
