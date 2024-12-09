@@ -5,9 +5,10 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {Medical_recordEntity} from "./entity/medical_record.entity";
 import {DateUtils} from "../../common/utils/date.utils";
 import {RedisHelper} from "../redis/redis.service";
+import {CacheModule} from "@nestjs/cache-manager";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Medical_recordEntity])],
+    imports: [TypeOrmModule.forFeature([Medical_recordEntity]),CacheModule.register({ isGlobal: true })],
     controllers: [MedicalRecordController],
     providers: [MedicalRecordService, DateUtils, RedisHelper],
 })
