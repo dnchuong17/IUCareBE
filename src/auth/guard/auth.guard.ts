@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
         }
         const request = context.switchToHttp().getRequest();
         const { access_token }= this.extractTokenFromHeader(request);
-        const refreshToken = this.extractRefreshToken(request)
+        const refreshToken = this.extractRefreshToken(request);
 
         if (!access_token) {
             throw new UnauthorizedException();
