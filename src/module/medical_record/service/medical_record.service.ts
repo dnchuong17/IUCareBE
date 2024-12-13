@@ -182,11 +182,6 @@ export class MedicalRecordService {
                    a.appointment_status,
                    a."doctorId",
                    a."patientId",
-                   p.patient_name,
-                   p.student_id,
-                   p.patient_address,
-                   p.patient_phone,
-                   p.patient_major,
                    p.allergy,
                    m.name_medicine
             FROM records r
