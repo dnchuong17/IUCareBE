@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Post, Request, UnauthorizedException} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Request, UnauthorizedException, UseGuards} from '@nestjs/common';
 
 import {SignInDto} from "../../module/doctor/dto/signIn.dto";
 import {DoctorDto} from "../../module/doctor/dto/doctor.dto";
@@ -28,6 +28,7 @@ export class AuthController {
             ...tokens,
         };
     }
+
     @Post('refresh-token')
     async refreshToken(@Body('refreshToken') refreshToken: string) {
         if (!refreshToken) {
@@ -40,7 +41,6 @@ export class AuthController {
             ...result,
         };
     }
-
 
     @Get('profile')
     getProfile(@Request() req) {
