@@ -12,9 +12,4 @@ export class DateUtils {
         const time = date.getTime();
         return new Date(time + offset * 60 * 1000);
     }
-
-
-
-
 }
-

@@ -40,6 +40,10 @@ export class AppointmentService {
         WHERE DATE(appointment.appointment_time) = $1
     `;
         const appointment = await this.dataSource.query(query, [dateISO]);
+        appointment.forEach((appointment) => {
+            appointment.appointment_time = this.dateUtils.formatStringToDate(appointment.appointment_time);
+        });
+        console.log(appointment[0].appointment_time);
         return appointment.length > 0 ? appointment : [];
     }
 
