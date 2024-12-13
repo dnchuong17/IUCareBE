@@ -25,6 +25,7 @@ export class AppointmentService {
         if (typeof date === 'string') {
             date = new Date(date);
         }
+        console.log(date);
         const dateISO =  this.dateUtils.formatDate(date);
         const query = `
         SELECT 
@@ -37,7 +38,7 @@ export class AppointmentService {
             patient.student_id 
         FROM appointment 
         LEFT JOIN patient ON appointment."patientId" = patient.patient_id
-        WHERE DATE(appointment.appointment_time) = $1
+        WHERE DATE(appointment.appointment_time AT TIME ZONE 'UTC') = $1
     `;
         const appointment = await this.dataSource.query(query, [dateISO]);
         appointment.forEach((appointment) => {
