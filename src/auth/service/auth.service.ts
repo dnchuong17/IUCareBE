@@ -14,8 +14,8 @@ export class AuthService {
 
     async validateDoctor(account: string, password: string) {
         const query = `
-      SELECT * FROM doctor WHERE doctor_account = $1;
-    `;
+            SELECT * FROM doctor WHERE doctor_account = $1;
+        `;
 
         const doctor = await this.dataSource.query(query, [account]);
 
@@ -45,6 +45,7 @@ export class AuthService {
         });
 
         return {
+            message: 'login successfully',
             access_token,
             refresh_token,
         };

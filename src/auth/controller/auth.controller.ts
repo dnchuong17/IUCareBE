@@ -22,11 +22,7 @@ export class AuthController {
     @Public()
     @Post('doctorLogin')
     signIn(@Body() signInDto: SignInDto) {
-        const tokens = this.authService.validateDoctor(signInDto.account, signInDto.password);
-        return {
-            message: 'Login successful',
-            ...tokens,
-        };
+        return this.authService.validateDoctor(signInDto.account, signInDto.password);
     }
 
     @Post('refresh-token')
