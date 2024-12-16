@@ -12,7 +12,6 @@ import {DepartmentModule} from "./module/department/department.module";
 import {MedicalRecordModule} from "./module/medical_record/medical_record.module";
 import {MedicineModule} from "./module/medicine/medicine.module";
 import { CacheModule } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-store';
 import dataSource, {dataSourceOptions} from "./config/data-source-option";
 dotenv.config();
 

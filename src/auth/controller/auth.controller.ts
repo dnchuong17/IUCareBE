@@ -1,5 +1,5 @@
-import {Body, Controller, Get, Param, Post, Request, UnauthorizedException, UseGuards} from '@nestjs/common';
-
+import {Body, Controller, Get, Post, Request, Res, UnauthorizedException} from '@nestjs/common';
+import { Response } from 'express';
 import {SignInDto} from "../../module/doctor/dto/signIn.dto";
 import {DoctorDto} from "../../module/doctor/dto/doctor.dto";
 import {DoctorService} from "../../module/doctor/service/doctor.service";
@@ -21,17 +21,17 @@ export class AuthController {
 
     @Public()
     @Post('doctorLogin')
-    signIn(@Body() signInDto: SignInDto) {
-        return this.authService.validateDoctor(signInDto.account, signInDto.password);
+    signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
+        return this.authService.validateDoctor(signInDto.account, signInDto.password, res);
     }
 
     @Post('refresh-token')
-    async refreshToken(@Body('refreshToken') refreshToken: string) {
+    async refreshToken(@Body('refreshToken') refreshToken: string, @Res() res: Response) {
         if (!refreshToken) {
             throw new UnauthorizedException('Refresh token is required');
         }
 
-        const result = await this.authService.refreshAccessToken(refreshToken);
+        const result = await this.authService.refreshAccessToken(refreshToken, res);
         return {
             message: 'Access token refreshed successfully',
             ...result,

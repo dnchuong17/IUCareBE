@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -12,10 +13,10 @@ export class AuthService {
         private readonly configService: ConfigService,
     ) {}
 
-    async validateDoctor(account: string, password: string) {
+    async validateDoctor(account: string, password: string, res: Response) {
         const query = `
-            SELECT * FROM doctor WHERE doctor_account = $1;
-        `;
+        SELECT * FROM doctor WHERE doctor_account = $1;
+    `;
 
         const doctor = await this.dataSource.query(query, [account]);
 
@@ -38,20 +39,30 @@ export class AuthService {
 
         const access_token = await this.jwtService.signAsync(payload, {
             secret: this.configService.get<string>('JWT_SECRETKEY'),
+            expiresIn: '15m',
         });
 
         const refresh_token = await this.jwtService.signAsync(payload, {
             secret: this.configService.get<string>('JWT_REFRESH_SECRETKEY'),
+            expiresIn: '7d',
+        });
+
+        res.cookie('access_token', access_token, {
+            httpOnly: true,
+            secure: true,
+        });
+
+        res.cookie('refresh_token', refresh_token, {
+            httpOnly: true,
+            secure: true,
         });
 
         return {
-            message: 'login successfully',
-            access_token,
-            refresh_token,
+            message: 'Login successfully',
         };
     }
 
-    async refreshAccessToken(refreshToken: string): Promise<{ access_token: string }> {
+    async refreshAccessToken(refreshToken: string, res: Response): Promise<{ access_token: string }> {
         const payload = await this.jwtService.verifyAsync(refreshToken, {
             secret: this.configService.get<string>('JWT_REFRESH_SECRETKEY'),
         });
@@ -66,6 +77,12 @@ export class AuthService {
                 secret: this.configService.get<string>('JWT_SECRETKEY'),
             },
         );
+
+        res.cookie('access_token', access_token, {
+            httpOnly: true,
+            secure: true,
+        });
+
         return { access_token };
     }
 }
