@@ -109,7 +109,15 @@ export class AppointmentService {
             return { message: "Invalid appointment time." };
         }
 
-        // Fetch appointment status
+        // Lấy giờ hiện tại (UTC)
+        const currentTimeUTC = new Date();
+
+        // So sánh thời gian
+        if (time.getTime() <= currentTimeUTC.getTime()) {
+            return { message: "The input time is in the past. Appointment cannot be edited." };
+        }
+
+        // Kiểm tra trạng thái của cuộc hẹn
         const appointmentQuery = `SELECT appointment_status FROM appointment WHERE appointment_id = $1`;
         const appointment = await this.dataSource.query(appointmentQuery, [id]);
 
@@ -119,20 +127,11 @@ export class AppointmentService {
 
         const appointmentStatus = appointment[0].appointment_status;
 
-        // Check if the appointment is marked as DONE
         if (appointmentStatus === AppointmentConstant.DONE) {
             return { message: "Medical examination completed. Appointment cannot be edited." };
         }
 
-        // Current UTC time
-        const currentTimeUTC = new Date();
-
-        // Check if the time input is in the past
-        if (time.getTime() <= currentTimeUTC.getTime()) {
-            return { message: "The time is in the past. Appointment cannot be edited." };
-        }
-
-        // Save the exact time to the database in UTC format
+        // Cập nhật giờ hẹn vào cơ sở dữ liệu
         const updateQuery = `
         UPDATE appointment
         SET appointment_time = $1
@@ -142,6 +141,7 @@ export class AppointmentService {
 
         return { message: "Appointment time updated successfully." };
     }
+
 
 
     async updateAppointmentStatus(appointmentDto: AppointmentDto, id: number) {
