@@ -40,26 +40,17 @@ export class MedicalRecordService {
             const currentTime = new Date();
             const appointmentTime = appointment[0].appointment_time;
             const appointmentStatus = appointment[0].appointment_status;
-
-            console.log(appointmentTime);
-            console.log(appointment[0]);
-            console.log(appointmentStatus);
-            const formattedAppointmentTime = this.dateUtils.formatTimeZone(new Date(appointmentTime));
-            const formattedCurrentTime = this.dateUtils.formatTimeZone(currentTime);
-
-            console.log("Formatted Appointment Time:", formattedAppointmentTime);
-            console.log("Formatted Current Time:", formattedCurrentTime);
-            console.log(appointmentStatus);
+            const appointmentTimeTrue = new Date(appointmentTime);
 
             if(appointmentStatus === AppointmentConstant.DONE){
                 return { message: "Medical examination completed." };
             }
 
-            if (appointmentTime.getDate() > currentTime.getDate()) {
+            if (appointmentTimeTrue.getDate() > currentTime.getDate()) {
                 return { message: "The appointment is not due date! Cannot examine." };
             }
 
-            if (appointmentTime.getDate() === currentTime.getDate() && appointmentTime.getHours() > currentTime.getHours()) {
+            if (appointmentTimeTrue.getDate() === currentTime.getDate() && appointmentTimeTrue.getHours() > currentTime.getHours()) {
                 return { message: "The appointment is not due yet for today! Cannot examine." };
             }
 

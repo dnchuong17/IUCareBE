@@ -108,13 +108,13 @@ export class AppointmentService {
 
         const currentTime = new Date();
         const appointmentStatus = appointment[0].appointment_status;
+        const appointmentTime = new Date(appointmentDto.time);
 
         if(appointmentStatus === AppointmentConstant.DONE){
             return { message: "Medical examination completed." };
         }
 
-
-        if (appointmentDto.time < currentTime) {
+        if (appointmentTime < currentTime) {
             return { message: "The time is in the past, cannot edit" };
         }
 
@@ -139,9 +139,10 @@ export class AppointmentService {
 
         if (appointmentStatus === AppointmentConstant.DONE) {
             return {
-                message: 'Da kham xong roi!',
+                message: 'Medical examination completed.',
             }
         }
+
         const query = `
         UPDATE appointment
         SET appointment_status = $1
