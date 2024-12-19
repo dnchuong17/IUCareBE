@@ -109,6 +109,7 @@ export class AppointmentService {
         }
 
         const appointmentTimeVN = new Date(time.getTime() + 7 * 60 * 60 * 1000);
+        console.log(appointmentTimeVN)
         const appointmentQuery = `SELECT appointment_status FROM appointment WHERE appointment_id = $1`;
         const appointment = await this.dataSource.query(appointmentQuery, [id]);
 
@@ -130,12 +131,13 @@ export class AppointmentService {
         }
 
         const appointmentTimeUTCForDB = new Date(appointmentTimeVN.getTime() - 7 * 60 * 60 * 1000);
+        console.log(appointmentTimeUTCForDB);
         const updateQuery = `
         UPDATE appointment
         SET appointment_time = $1
         WHERE appointment_id = $2
     `;
-        await this.dataSource.query(updateQuery, [appointmentTimeUTCForDB.toISOString(), id]);
+        await this.dataSource.query(updateQuery, [appointmentTimeVN, id]);
 
         return { message: "Appointment time updated successfully." };
     }
