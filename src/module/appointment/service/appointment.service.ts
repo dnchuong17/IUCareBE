@@ -104,12 +104,14 @@ export class AppointmentService {
 
 
     async fixAppointment(appointmentDto: AppointmentDto, id: number) {
+        console.log(appointmentDto.time);
+
         const query = `
         UPDATE appointment
         SET appointment_time = $1
         WHERE appointment_id = $2
     `;
-        await this.dataSource.query(query, [appointmentDto, id]);
+        await this.dataSource.query(query, [appointmentDto.time, id]);
 
         return {
             message: 'Appointment time updated successfully',
