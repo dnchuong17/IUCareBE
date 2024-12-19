@@ -103,34 +103,17 @@ export class AppointmentService {
     }
 
 
-    async fixAppointment(time: Date, id: number) {
-        const appointmentQuery = `SELECT appointment_status FROM appointment WHERE appointment_id = $1`;
-        const appointment = await this.dataSource.query(appointmentQuery, [id]);
-
-        if (appointment.length === 0) {
-            return { message: "Appointment not found." };
-        }
-
-        const appointmentStatus = appointment[0].appointment_status;
-
-        if (appointmentStatus === AppointmentConstant.DONE) {
-            return {
-                message: "Medical examination completed. Appointment cannot"
-            };
-        }
-
-        if (!(time instanceof Date) || isNaN(time.getTime())) {
-            return { message: "Invalid appointment time." };
-        }
-
-        const updateQuery = `
+    async fixAppointment(appointmentDto: AppointmentDto, id: number) {
+        const query = `
         UPDATE appointment
         SET appointment_time = $1
         WHERE appointment_id = $2
     `;
-        await this.dataSource.query(updateQuery, [time.toISOString(), id]);
+        await this.dataSource.query(query, [appointmentDto, id]);
 
-        return { message: "Appointment time updated successfully." };
+        return {
+            message: 'Appointment time updated successfully',
+        };
     }
 
 
