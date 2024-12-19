@@ -34,29 +34,7 @@ export class MedicalRecordService {
         await queryRunner.startTransaction();
 
         try {
-            const appointmentQuery = `SELECT appointment_time, appointment_status FROM appointment WHERE appointment_id = $1`;
-            const appointment = await queryRunner.query(appointmentQuery, [medicalRecordDto.appointmentId]);
 
-            const currentTime = new Date();
-            const appointmentTime = appointment[0].appointment_time;
-            const appointmentStatus = appointment[0].appointment_status;
-            const appointmentTimeTrue = new Date(appointmentTime);
-
-            console.log(`Appointment time from database: ${appointment[0].appointment_time}`);
-            console.log(`AppointmentTime = appointment time from database: ${appointmentTime}`);
-            console.log(`Appointment time True (after format): ${appointmentTimeTrue}`);
-
-            if(appointmentStatus === AppointmentConstant.DONE){
-                return { message: "Medical examination completed." };
-            }
-
-            if (appointmentTimeTrue.getDate() > currentTime.getDate()) {
-                return { message: "The appointment is not due date! Cannot examine." };
-            }
-
-            if (appointmentTimeTrue.getDate() === currentTime.getDate() && appointmentTimeTrue.getHours() > currentTime.getHours()) {
-                return { message: "The appointment is not due yet for today! Cannot examine." };
-            }
 
             const updateRecordQuery = `
             UPDATE records
