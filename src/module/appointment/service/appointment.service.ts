@@ -26,7 +26,6 @@ export class AppointmentService {
         if (typeof date === 'string') {
             date = new Date(date);
         }
-        console.log(date);
         const dateISO =  this.dateUtils.formatDate(date);
         const query = `
         SELECT 

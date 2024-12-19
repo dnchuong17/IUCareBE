@@ -42,6 +42,10 @@ export class MedicalRecordService {
             const appointmentStatus = appointment[0].appointment_status;
             const appointmentTimeTrue = new Date(appointmentTime);
 
+            console.log(`Appointment time from database: ${appointment[0].appointment_time}`);
+            console.log(`AppointmentTime = appointment time from database: ${appointmentTime}`);
+            console.log(`Appointment time True (after format): ${appointmentTimeTrue}`);
+
             if(appointmentStatus === AppointmentConstant.DONE){
                 return { message: "Medical examination completed." };
             }
