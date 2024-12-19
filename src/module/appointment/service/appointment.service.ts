@@ -104,7 +104,13 @@ export class AppointmentService {
 
 
     async fixAppointment(appointmentDto: AppointmentDto, id: number) {
-        console.log(appointmentDto.time);
+        const currentTime = new Date();
+
+        const providedTime = new Date(appointmentDto.time);
+
+        if (providedTime < currentTime) {
+            throw new BadRequestException('Can not update appointment with time in the past');
+        }
 
         const query = `
         UPDATE appointment
