@@ -104,20 +104,6 @@ export class AppointmentService {
 
 
     async fixAppointment(time: Date, id: number) {
-        // Validate input
-        if (!(time instanceof Date) || isNaN(time.getTime())) {
-            return { message: "Invalid appointment time." };
-        }
-
-        // Lấy giờ hiện tại (UTC)
-        const currentTimeUTC = new Date();
-
-        // So sánh thời gian
-        if (time.getTime() <= currentTimeUTC.getTime()) {
-            return { message: "The input time is in the past. Appointment cannot be edited." };
-        }
-
-        // Kiểm tra trạng thái của cuộc hẹn
         const appointmentQuery = `SELECT appointment_status FROM appointment WHERE appointment_id = $1`;
         const appointment = await this.dataSource.query(appointmentQuery, [id]);
 
@@ -128,10 +114,15 @@ export class AppointmentService {
         const appointmentStatus = appointment[0].appointment_status;
 
         if (appointmentStatus === AppointmentConstant.DONE) {
-            return { message: "Medical examination completed. Appointment cannot be edited." };
+            return {
+                message: "Medical examination completed. Appointment cannot"
+            };
         }
 
-        // Cập nhật giờ hẹn vào cơ sở dữ liệu
+        if (!(time instanceof Date) || isNaN(time.getTime())) {
+            return { message: "Invalid appointment time." };
+        }
+
         const updateQuery = `
         UPDATE appointment
         SET appointment_time = $1
