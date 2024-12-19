@@ -4,11 +4,13 @@ import { DataSource } from 'typeorm';
 import {AppointmentService} from "../../appointment/service/appointment.service";
 import {RedisHelper} from "../../redis/redis.service";
 import {AppointmentConstant} from "../../appointment/utils/appointment.constant";
+import {DateUtils} from "../../../common/utils/date.utils";
 
 @Injectable()
 export class MedicalRecordService {
     constructor(private readonly dataSource: DataSource,
-                private readonly redisHelper : RedisHelper) {
+                private readonly redisHelper : RedisHelper,
+                private readonly dateUtils: DateUtils) {
     }
 
     async firstRecord(recordDto: MedicalRecordDto) {
@@ -38,6 +40,16 @@ export class MedicalRecordService {
             const currentTime = new Date();
             const appointmentTime = appointment[0].appointment_time;
             const appointmentStatus = appointment[0].appointment_status;
+
+            console.log(appointmentTime);
+            console.log(appointment[0]);
+            console.log(appointmentStatus);
+            const formattedAppointmentTime = this.dateUtils.formatTimeZone(new Date(appointmentTime));
+            const formattedCurrentTime = this.dateUtils.formatTimeZone(currentTime);
+
+            console.log("Formatted Appointment Time:", formattedAppointmentTime);
+            console.log("Formatted Current Time:", formattedCurrentTime);
+            console.log(appointmentStatus);
 
             if(appointmentStatus === AppointmentConstant.DONE){
                 return { message: "Medical examination completed." };
