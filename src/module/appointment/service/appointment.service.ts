@@ -7,6 +7,7 @@ import {DateUtils} from "../../../common/utils/date.utils";
 import {MedicalRecordService} from "../../medical_record/service/medical_record.service";
 import {MedicalRecordDto} from "../../medical_record/dto/medical_record.dto";
 import {AppointmentConstant} from "../utils/appointment.constant";
+import * as timers from "node:timers";
 
 @Injectable()
 export class AppointmentService {
@@ -102,15 +103,15 @@ export class AppointmentService {
     }
 
 
-    async fixAppointment(appointmentDto: AppointmentDto, id: number) {
+    async fixAppointment(time: Date, id: number) {
         const appointmentQuery = `SELECT appointment_status FROM appointment WHERE appointment_id = $1`;
         const appointment = await this.dataSource.query(appointmentQuery, [id]);
 
         const currentTime = new Date();
         const appointmentStatus = appointment[0].appointment_status;
-        const appointmentTime = new Date(appointmentDto.time);
+        const appointmentTime = new Date(time);
 
-        if(appointmentStatus === AppointmentConstant.DONE){
+        if(appointmentStatus === AppointmentConstant.DONE) {
             return { message: "Medical examination completed." };
         }
 
@@ -118,19 +119,23 @@ export class AppointmentService {
             return { message: "The time is in the past, cannot edit" };
         }
 
+        // Convert the Date object to a timestamp (milliseconds)
+        const appointmentTimestamp = appointmentTime.getTime();
 
         const query = `
-        UPDATE appointment
-        SET appointment_time = $1
-        WHERE appointment_id = $2
-
+    UPDATE appointment
+    SET appointment_time = $1
+    WHERE appointment_id = $2
     `;
-        await this.dataSource.query(query, [appointmentDto.time, id]);
+
+        // Pass the timestamp (as a number) to the database
+        await this.dataSource.query(query, [appointmentTimestamp, id]);
 
         return {
             message: 'Appointment time updated successfully',
         };
     }
+
 
     async updateAppointmentStatus(appointmentDto: AppointmentDto, id: number) {
         const appointStatusQuery = 'SELECT appointment_status FROM appointment WHERE appointment_id = $1';
