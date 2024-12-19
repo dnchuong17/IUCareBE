@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {BadRequestException, Injectable} from "@nestjs/common";
 import {MedicalRecordDto} from "../dto/medical_record.dto";
 import { DataSource } from 'typeorm';
 import {AppointmentService} from "../../appointment/service/appointment.service";
@@ -31,28 +31,43 @@ export class MedicalRecordService {
         await queryRunner.startTransaction();
 
         try {
+            const appointmentQuery = `SELECT appointment_time FROM appointment WHERE appointment_id = $1`;
+            const appointment = await queryRunner.query(appointmentQuery, [medicalRecordDto.appointmentId]);
+
+            const currentTime = new Date();
+            const appointmentTime = appointment[0].appointment_time;
+
+            if (appointmentTime.getDate() > currentTime.getDate()) {
+                return { message: "The appointment is not due date! Cannot examine." };
+            }
+
+            if (appointmentTime.getDate() === currentTime.getDate() && appointmentTime.getHours() > currentTime.getHours()) {
+                return { message: "The appointment is not due yet for today! Cannot examine." };
+            }
+
             const updateRecordQuery = `
-                UPDATE records
-                SET treatment = $1,
-                    diagnosis = $2,
-                    suggest   = $3
-                WHERE medical_record_id = $4
-            `;
+            UPDATE records
+            SET treatment = $1,
+                diagnosis = $2,
+                suggest   = $3
+            WHERE medical_record_id = $4
+        `;
             await queryRunner.query(updateRecordQuery, [
                 medicalRecordDto.treatment,
                 medicalRecordDto.diagnosis,
                 medicalRecordDto.suggest,
                 id,
             ]);
+
             if (medicalRecordDto.medicines?.length) {
                 const values = medicalRecordDto.medicines
                     .map((medicineId) => `(${id}, ${medicineId})`)
                     .join(",");
 
                 const insertMedicinesQuery = `
-                    INSERT INTO medicine_record (medical_record_id, medicine_id)
-                    VALUES ${values} ON CONFLICT DO NOTHING;
-                `;
+                INSERT INTO medicine_record (medical_record_id, medicine_id)
+                VALUES ${values} ON CONFLICT DO NOTHING;
+            `;
                 await queryRunner.query(insertMedicinesQuery);
             }
 
@@ -62,11 +77,12 @@ export class MedicalRecordService {
         } catch (error) {
             await queryRunner.rollbackTransaction();
             console.error("Error updating medical record:", error.message);
-            throw new Error("Failed to update the medical record.");
+            return { message: "Failed to update the medical record." }; // Gracefully handle the error
         } finally {
             await queryRunner.release();
         }
     }
+
 
 
     async getRecordByAppointmentId(id: number) {
