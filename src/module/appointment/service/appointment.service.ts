@@ -103,11 +103,10 @@ export class AppointmentService {
 
 
     async fixAppointment(appointmentDto: AppointmentDto, id: number) {
-        const appointmentQuery = `SELECT appointment_time,appointment_status FROM appointment WHERE appointment_id = $1`;
+        const appointmentQuery = `SELECT appointment_status FROM appointment WHERE appointment_id = $1`;
         const appointment = await this.dataSource.query(appointmentQuery, [id]);
 
         const currentTime = new Date();
-        const appointmentTime = new Date(appointment[0].appointment_time);
         const appointmentStatus = appointment[0].appointment_status;
 
         if(appointmentStatus === AppointmentConstant.DONE){
@@ -115,7 +114,7 @@ export class AppointmentService {
         }
 
 
-        if (appointmentTime < currentTime) {
+        if (appointmentDto.time < currentTime) {
             return { message: "The time is in the past, cannot edit" };
         }
 
