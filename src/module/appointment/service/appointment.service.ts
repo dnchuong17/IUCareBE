@@ -104,37 +104,43 @@ export class AppointmentService {
 
 
     async fixAppointment(time: Date, id: number) {
+        if (!(time instanceof Date) || isNaN(time.getTime())) {
+            return { message: "Invalid appointment time." };
+        }
+
+        const appointmentTimeVN = new Date(time.getTime() + 7 * 60 * 60 * 1000);
         const appointmentQuery = `SELECT appointment_status FROM appointment WHERE appointment_id = $1`;
         const appointment = await this.dataSource.query(appointmentQuery, [id]);
 
-        const currentTime = new Date();
+        if (appointment.length === 0) {
+            return { message: "Appointment not found." };
+        }
+
         const appointmentStatus = appointment[0].appointment_status;
-        const appointmentTime = new Date(time);
 
-        if(appointmentStatus === AppointmentConstant.DONE) {
-            return { message: "Medical examination completed." };
+        if (appointmentStatus === AppointmentConstant.DONE) {
+            return { message: "Medical examination completed. Appointment cannot be edited." };
         }
 
-        if (appointmentTime < currentTime) {
-            return { message: "The time is in the past, cannot edit" };
+        const currentTimeUTC = new Date();
+        const currentTimeVN = new Date(currentTimeUTC.getTime() + 7 * 60 * 60 * 1000);
+
+        if (appointmentTimeVN.getTime() <= currentTimeVN.getTime()) {
+            return { message: "The time is in the past. Appointment cannot be edited." };
         }
 
-        // Convert the Date object to a timestamp (milliseconds)
-        const appointmentTimestamp = appointmentTime.getTime();
-
-        const query = `
-    UPDATE appointment
-    SET appointment_time = $1
-    WHERE appointment_id = $2
+        const appointmentTimeUTCForDB = new Date(appointmentTimeVN.getTime() - 7 * 60 * 60 * 1000);
+        const updateQuery = `
+        UPDATE appointment
+        SET appointment_time = $1
+        WHERE appointment_id = $2
     `;
+        await this.dataSource.query(updateQuery, [appointmentTimeUTCForDB.toISOString(), id]);
 
-        // Pass the timestamp (as a number) to the database
-        await this.dataSource.query(query, [appointmentTimestamp, id]);
-
-        return {
-            message: 'Appointment time updated successfully',
-        };
+        return { message: "Appointment time updated successfully." };
     }
+
+
 
 
     async updateAppointmentStatus(appointmentDto: AppointmentDto, id: number) {

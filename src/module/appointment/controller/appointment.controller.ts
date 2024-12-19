@@ -24,7 +24,7 @@ export class AppointmentController {
     }
 
     @Patch('edit/:id')
-    fixAppointmentTime(@Body() time: Date,@Param('id') id: number) {
+    fixAppointmentTime(@Body('time') time: Date, @Param('id') id: number) {
         return this.appointmentService.fixAppointment(time, id);
     }
 
