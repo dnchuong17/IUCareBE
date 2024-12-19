@@ -60,15 +60,27 @@ export class AppointmentService {
     }
 
     async createAppointment(appointmentDto: AppointmentDto) {
-        const checkExistedAppointment = await this.existAppointment( appointmentDto.time, appointmentDto.doctorId, appointmentDto.patientId);
+        const currentTime = new Date();
+        const appointmentTime = new Date(appointmentDto.time);
+
+        if (appointmentTime <= currentTime) {
+            return { message: "Appointment time must be in the future!" };
+        }
+
+        const checkExistedAppointment = await this.existAppointment(
+            appointmentDto.time,
+            appointmentDto.doctorId,
+            appointmentDto.patientId
+        );
+
         if (checkExistedAppointment) {
             return { message: "Please select a different time slot!" };
         }
 
         const query = `
-        INSERT INTO appointment (appointment_time, "doctorId", "patientId", appointment_status)
-        VALUES ($1, $2, $3, $4) RETURNING appointment_id
-    `;
+    INSERT INTO appointment (appointment_time, "doctorId", "patientId", appointment_status)
+    VALUES ($1, $2, $3, $4) RETURNING appointment_id
+`;
         const result = await this.dataSource.query(query, [
             appointmentDto.time,
             appointmentDto.doctorId,
