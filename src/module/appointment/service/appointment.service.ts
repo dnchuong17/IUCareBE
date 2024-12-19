@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {BadRequestException, Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {AppointmentEntity} from "../entity/appointment.entity";
 import {DataSource, Repository} from "typeorm";
@@ -66,7 +66,7 @@ export class AppointmentService {
         const appointmentTime = new Date(appointmentDto.time);
 
         if (appointmentTime <= currentTime) {
-            return { message: "Appointment time must be in the future!" };
+            throw new BadRequestException("Appointment time must be in the future!");
         }
 
         const checkExistedAppointment = await this.existAppointment(
@@ -76,7 +76,7 @@ export class AppointmentService {
         );
 
         if (checkExistedAppointment) {
-            return { message: "Please select a different time slot!" };
+            throw new BadRequestException("Please select a different time slot!");
         }
 
         const query = `
