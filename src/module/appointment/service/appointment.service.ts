@@ -104,12 +104,12 @@ export class AppointmentService {
 
 
     async fixAppointment(time: Date, id: number) {
+        // Validate input
         if (!(time instanceof Date) || isNaN(time.getTime())) {
             return { message: "Invalid appointment time." };
         }
 
-        const appointmentTimeVN = new Date(time.getTime() + 7 * 60 * 60 * 1000);
-        console.log(appointmentTimeVN)
+        // Fetch appointment status
         const appointmentQuery = `SELECT appointment_status FROM appointment WHERE appointment_id = $1`;
         const appointment = await this.dataSource.query(appointmentQuery, [id]);
 
@@ -119,30 +119,29 @@ export class AppointmentService {
 
         const appointmentStatus = appointment[0].appointment_status;
 
+        // Check if the appointment is marked as DONE
         if (appointmentStatus === AppointmentConstant.DONE) {
             return { message: "Medical examination completed. Appointment cannot be edited." };
         }
 
+        // Current UTC time
         const currentTimeUTC = new Date();
-        const currentTimeVN = new Date(currentTimeUTC.getTime() + 7 * 60 * 60 * 1000);
 
-        if (appointmentTimeVN.getTime() <= currentTimeVN.getTime()) {
+        // Check if the time input is in the past
+        if (time.getTime() <= currentTimeUTC.getTime()) {
             return { message: "The time is in the past. Appointment cannot be edited." };
         }
 
-        const appointmentTimeUTCForDB = new Date(appointmentTimeVN.getTime() - 7 * 60 * 60 * 1000);
-        console.log(appointmentTimeUTCForDB);
+        // Save the exact time to the database in UTC format
         const updateQuery = `
         UPDATE appointment
         SET appointment_time = $1
         WHERE appointment_id = $2
     `;
-        await this.dataSource.query(updateQuery, [appointmentTimeVN, id]);
+        await this.dataSource.query(updateQuery, [time.toISOString(), id]);
 
         return { message: "Appointment time updated successfully." };
     }
-
-
 
 
     async updateAppointmentStatus(appointmentDto: AppointmentDto, id: number) {
