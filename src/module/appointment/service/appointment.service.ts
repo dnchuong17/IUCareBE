@@ -44,7 +44,8 @@ export class AppointmentService {
         appointment.forEach((appointment) => {
             appointment.appointment_time = this.dateUtils.formatStringToDate(appointment.appointment_time);
         });
-        console.log(appointment[0].appointment_time);
+        console.log('Appointment time: ' +
+            appointment[0].appointment_time);
         return appointment.length > 0 ? appointment : [];
     }
 
