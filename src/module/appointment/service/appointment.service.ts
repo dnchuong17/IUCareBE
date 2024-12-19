@@ -6,6 +6,7 @@ import {AppointmentDto} from "../dto/appointment.dto";
 import {DateUtils} from "../../../common/utils/date.utils";
 import {MedicalRecordService} from "../../medical_record/service/medical_record.service";
 import {MedicalRecordDto} from "../../medical_record/dto/medical_record.dto";
+import {AppointmentConstant} from "../utils/appointment.constant";
 
 @Injectable()
 export class AppointmentService {
@@ -102,6 +103,23 @@ export class AppointmentService {
 
 
     async fixAppointment(appointmentDto: AppointmentDto, id: number) {
+        const appointmentQuery = `SELECT appointment_time,appointment_status FROM appointment WHERE appointment_id = $1`;
+        const appointment = await this.dataSource.query(appointmentQuery, [id]);
+
+        const currentTime = new Date();
+        const appointmentTime = new Date(appointment[0].appointment_time);
+        const appointmentStatus = appointment[0].appointment_status;
+
+        if(appointmentStatus === AppointmentConstant.DONE){
+            return { message: "Medical examination completed." };
+        }
+
+
+        if (appointmentTime < currentTime) {
+            return { message: "The time is in the past, cannot edit" };
+        }
+
+
         const query = `
         UPDATE appointment
         SET appointment_time = $1
@@ -116,13 +134,21 @@ export class AppointmentService {
     }
 
     async updateAppointmentStatus(appointmentDto: AppointmentDto, id: number) {
+        const appointStatusQuery = 'SELECT appointment_status FROM appointment WHERE appointment_id = $1';
+        const appointment = await this.dataSource.query(appointStatusQuery, [id]);
+        const appointmentStatus = appointment[0].appointment_status;
+
+        if (appointmentStatus === AppointmentConstant.DONE) {
+            return {
+                message: 'Da kham xong roi!',
+            }
+        }
         const query = `
         UPDATE appointment
         SET appointment_status = $1
-        WHERE appointment_id = $2
-    `;
-        await this.dataSource.query(query, [appointmentDto.status, id]);
+        WHERE appointment_id = $2`;
 
+        await this.dataSource.query(query, [appointmentDto.status, id]);
         return {
             message: 'Appointment status updated successfully',
         };

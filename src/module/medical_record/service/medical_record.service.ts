@@ -3,6 +3,7 @@ import {MedicalRecordDto} from "../dto/medical_record.dto";
 import { DataSource } from 'typeorm';
 import {AppointmentService} from "../../appointment/service/appointment.service";
 import {RedisHelper} from "../../redis/redis.service";
+import {AppointmentConstant} from "../../appointment/utils/appointment.constant";
 
 @Injectable()
 export class MedicalRecordService {
@@ -31,11 +32,16 @@ export class MedicalRecordService {
         await queryRunner.startTransaction();
 
         try {
-            const appointmentQuery = `SELECT appointment_time FROM appointment WHERE appointment_id = $1`;
+            const appointmentQuery = `SELECT appointment_time, appointment_status FROM appointment WHERE appointment_id = $1`;
             const appointment = await queryRunner.query(appointmentQuery, [medicalRecordDto.appointmentId]);
 
             const currentTime = new Date();
             const appointmentTime = appointment[0].appointment_time;
+            const appointmentStatus = appointment[0].appointment_status;
+
+            if(appointmentStatus === AppointmentConstant.DONE){
+                return { message: "Medical examination completed." };
+            }
 
             if (appointmentTime.getDate() > currentTime.getDate()) {
                 return { message: "The appointment is not due date! Cannot examine." };
