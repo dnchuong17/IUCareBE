@@ -23,11 +23,12 @@ export class AppointmentService {
         return await this.dataSource.query(query);
     }
 
-    async getAppointmentsByDate(date:string | Date) {
+    async getAppointmentsByDate(date: string | Date) {
         if (typeof date === 'string') {
             date = new Date(date);
         }
-        const dateISO =  this.dateUtils.formatDate(date);
+
+        const dateISO = this.dateUtils.formatDate(date);
         const query = `
         SELECT 
             appointment.appointment_id,
@@ -41,14 +42,23 @@ export class AppointmentService {
         LEFT JOIN patient ON appointment."patientId" = patient.patient_id
         WHERE DATE(appointment.appointment_time AT TIME ZONE 'UTC') = $1
     `;
+
         const appointment = await this.dataSource.query(query, [dateISO]);
-        appointment.forEach((appointment) => {
-            appointment.appointment_time = this.dateUtils.formatStringToDate(appointment.appointment_time);
+
+        if (appointment.length === 0) {
+            return [];
+        }
+
+        appointment.forEach((appt) => {
+            if (appt.appointment_time) {
+                appt.appointment_time = this.dateUtils.formatStringToDate(appt.appointment_time);
+            }
         });
-        console.log('Appointment time: ' +
-            appointment[0].appointment_time);
-        return appointment.length > 0 ? appointment : [];
+
+        return appointment;
     }
+
+
 
     async existAppointment(date: Date, doctorId: number, patientId: number) {
         const query = `
