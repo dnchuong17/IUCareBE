@@ -13,8 +13,8 @@ export class AppointmentController {
         return this.appointmentService.getAllAppointments();
     }
 
-    @Get('check')
-    getAppointmentByDate(@Query('date') date: string | Date, doctorId: number) {
+    @Get('check/:doctorId')
+    getAppointmentByDate(@Query('date') date: string | Date,@Param('doctorId') doctorId: number) {
         return this.appointmentService.getAppointmentsByDate(date, doctorId);
     }
 
