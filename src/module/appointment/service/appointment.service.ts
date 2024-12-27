@@ -40,6 +40,7 @@ export class AppointmentService {
             patient.student_id 
         FROM appointment 
         LEFT JOIN patient ON appointment."patientId" = patient.patient_id
+        LEFT JOIN doctor ON appointement."doctorId" = doctor.doctor_id
         WHERE DATE(appointment.appointment_time AT TIME ZONE 'UTC') = $1
     `;
 
