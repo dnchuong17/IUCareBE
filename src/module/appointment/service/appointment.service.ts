@@ -22,8 +22,7 @@ export class AppointmentService {
         const query = 'SELECT * FROM appointment';
         return await this.dataSource.query(query);
     }
-
-    async getAppointmentsByDate(date: string | Date) {
+    async getAppointmentsByDate(date: string | Date, doctorId: number) {
         if (typeof date === 'string') {
             date = new Date(date);
         }
@@ -40,10 +39,11 @@ export class AppointmentService {
             patient.student_id 
         FROM appointment 
         LEFT JOIN patient ON appointment."patientId" = patient.patient_id
-        WHERE DATE(appointment.appointment_time AT TIME ZONE 'UTC') = $1
+        LEFT JOIN doctor ON appointment."doctorId" = doctor.doctor_id
+        WHERE DATE(appointment.appointment_time AT TIME ZONE 'UTC') = $1 AND appointment."doctorId" = $2
     `;
 
-        const appointment = await this.dataSource.query(query, [dateISO]);
+        const appointment = await this.dataSource.query(query, [dateISO,doctorId]);
 
         if (appointment.length === 0) {
             return [];
