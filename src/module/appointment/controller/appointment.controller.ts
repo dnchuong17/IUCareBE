@@ -14,8 +14,8 @@ export class AppointmentController {
     }
 
     @Get('check')
-    getAppointmentByDate(@Query('date') date: string | Date) {
-        return this.appointmentService.getAppointmentsByDate(date);
+    getAppointmentByDate(@Query('date') date: string | Date, doctorId: number) {
+        return this.appointmentService.getAppointmentsByDate(date, doctorId);
     }
 
     @Post('create_appointment')
