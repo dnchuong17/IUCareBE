@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Post, Query} from "@nestjs/common";
+import {BadRequestException, Body, Controller, Get, Param, Post, Query} from "@nestjs/common";
 import {PatientService} from "../service/patient.service";
 import {PatientDto} from "../dto/patient.dto";
 import {Public} from "../../../auth/decorator/public.decorator";
@@ -14,10 +14,17 @@ export class PatientController {
     }
 
 
+    @Public()
     @Get('information')
-    getPatientInformation(@Query('studentId') studentId: string){
-        return this.patientService.getInformationPatient(studentId);
+    getPatientInformation(@Query('studentIds') studentIds: string) {
+        if (!studentIds) {
+            throw new BadRequestException('Missing query param: studentIds');
+        }
+
+        const ids = studentIds.split(',').map((id) => id.trim()).filter(id => id);
+        return this.patientService.getInformationPatients(ids);
     }
+
 
     @Get()
     async searchPatient(@Query('studentId') studentId: string) {
@@ -31,6 +38,16 @@ export class PatientController {
                 : { message: 'No patients found' };
         } catch (error) {
             return { message: 'An error occurred', error: error.message };
+        }
+    }
+
+    @Public()
+    @Get('student-ids')
+    async getAllID() {
+        try {
+            return this.patientService.getAllStudentIds();
+        } catch (error){
+            throw error;
         }
     }
 

@@ -7,7 +7,7 @@ dotenv.config();
 
 
 export const dataSourceOptions: DataSourceOptions = {
-    type: 'postgres',
+    type: 'mysql',
     host: process.env.DATABASE_HOST,
     port: Number(process.env.DATABASE_PORT),
     username: process.env.DATABASE_USERNAME,
@@ -15,7 +15,7 @@ export const dataSourceOptions: DataSourceOptions = {
     database: process.env.DATABASE_DATABASE,
     entities: ['dist/**/*.entity{.ts,.js}'],
     migrations: ['db/migrations/*{.ts,.js}'],
-    synchronize: false,
+    synchronize: true,
 }
 
 const dataSource = new DataSource(dataSourceOptions);

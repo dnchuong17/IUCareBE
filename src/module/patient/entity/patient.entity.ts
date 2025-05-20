@@ -43,4 +43,9 @@ export class PatientEntity extends BaseEntity {
     @OneToMany(() => AppointmentEntity, appointments => appointments.patient)
     appointments: AppointmentEntity[];
 
+    @Column({ name: 'blood_type', type: 'enum', enum: ['A', 'B', 'AB', 'O'], nullable: true })
+    bloodType: 'A' | 'B' | 'AB' | 'O';
+
+    @Column({ name: 'ethnicity', type: 'varchar', length: 100, nullable: true })
+    ethnicity: string;
 }

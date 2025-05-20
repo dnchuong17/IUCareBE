@@ -12,10 +12,29 @@ export class PatientService {
     ) {
     }
 
-    async getInformationPatient(studentId: string) {
-        const query = 'SELECT * FROM patient LEFT JOIN insurance ON patient.patient_id = insurance."patientId" WHERE patient.student_id = $1';
-        const patientInfor = await this.dataSource.query(query, [studentId]);
-        return patientInfor[0];
+    async getInformationPatients(studentIds: string[]) {
+        if (studentIds.length === 0) return [];
+
+        const placeholders = studentIds.map(() => '?').join(', ');
+        const query = `
+        SELECT
+            p.*,
+            r.*
+        FROM patient p
+        JOIN appointment a ON a.patientId = p.patient_id
+        JOIN records r ON r.appointmentId = a.appointment_id
+        WHERE p.student_id IN (${placeholders})
+        ORDER BY r.date DESC
+    `;
+
+        const result = await this.dataSource.query(query, studentIds);
+        return result;
+    }
+
+
+    async getAllStudentIds(): Promise<string[]> {
+        const result = await this.dataSource.query(`SELECT student_id FROM patient`);
+        return result.map((row) => row.student_id);
     }
 
     async findStudentBySID(studentId: string) {

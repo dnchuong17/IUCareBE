@@ -51,4 +51,19 @@ export class Medical_recordEntity extends BaseEntity {
     @OneToOne(() => AppointmentEntity, (appointment) => appointment.record)
     @JoinColumn()
     appointment: AppointmentEntity;
+
+    @Column({ name: 'temperature', type: 'float', nullable: true })
+    temperature: number;
+
+    @Column({ name: 'blood_pressure', type: 'varchar', length: 50 })
+    bloodPressure: string;
+
+    @Column({ name: 'heart_rate', type: 'int', nullable: true })
+    heartRate: number;
+
+    @Column({ name: 'respiratory_rate', type: 'int', nullable: true })
+    respiratoryRate: number;
+
+    @Column({ name: 'surgical_history', type: 'text', nullable: true })
+    surgicalHistory: string;
 }
