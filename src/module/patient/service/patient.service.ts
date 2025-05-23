@@ -33,7 +33,11 @@ export class PatientService {
 
     async getAllStudentIds(): Promise<string[]> {
         const result = await this.dataSource.query(`SELECT student_id FROM patient`);
-        return result.map((row) => row.student_id);
+        return result.map((row) => {
+            return {
+                studentId : row.student_id
+            }
+        });
     }
 
     async findStudentBySID(studentId: string) {

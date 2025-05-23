@@ -14,6 +14,7 @@ import {MedicineModule} from "./module/medicine/medicine.module";
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import dataSource, {dataSourceOptions} from "./config/data-source-option";
+import {TracingLogger, TracingLoggerModule} from "common_be";
 dotenv.config();
 
 @Module({
@@ -35,7 +36,8 @@ dotenv.config();
       MedicineModule,
       ConfigModule.forRoot({
         isGlobal: true,
-      })
+      }),
+      TracingLoggerModule
   ],
   controllers: [],
   providers: [],
