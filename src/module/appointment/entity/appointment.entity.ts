@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {MedicineEntity} from "../../medicine/entity/medicine.entity";
 import {AppointmentConstant} from "../utils/appointment.constant";
 import {IsDate, IsNotEmpty, IsNumber, Min} from "class-validator";
@@ -21,9 +21,10 @@ export class AppointmentEntity extends BaseEntity {
     @ManyToOne(()=> DoctorEntity, doctor => doctor.appointments)
     doctor: DoctorEntity;
 
-  @ManyToOne(()=> PatientEntity, patient => patient.appointments)
+    @ManyToOne(()=> PatientEntity, patient => patient.appointments)
+    @JoinColumn({ name: 'patient_id' })
     patient: PatientEntity;
 
-  @OneToOne(()=> Medical_recordEntity, (record) => record.appointment)
-  record: Medical_recordEntity;
+    @OneToOne(()=> Medical_recordEntity, (record) => record.appointment)
+    record: Medical_recordEntity;
 }
