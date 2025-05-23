@@ -17,6 +17,7 @@ export class PatientHandler {
     async getStudentInfo (){
         try{
             const res =  await this.patientService.getAllStudentIds();
+            console.log(res);
             return res;
         }catch (e) {
             throw e;
