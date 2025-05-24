@@ -90,9 +90,10 @@ export class AppointmentService {
         }
 
         const query = `
-    INSERT INTO appointment (appointment_time, "doctorId", "patientId", appointment_status)
-    VALUES ($1, $2, $3, $4) RETURNING appointment_id
-`;
+            INSERT INTO appointment (appointment_time, "doctorId", "patientId", appointment_status)
+            VALUES ($1, $2, $3, $4) RETURNING appointment_id
+        `;
+
         const result = await this.dataSource.query(query, [
             appointmentDto.time,
             appointmentDto.doctorId,
