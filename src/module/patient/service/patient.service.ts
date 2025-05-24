@@ -56,33 +56,23 @@ export class PatientService {
             throw new BadRequestException('Patient already exists');
         }
 
-        const insertPatientQuery = `
-            INSERT INTO patient (
-                patient_name,
-                patient_address,
-                patient_major,
-                patient_phone,
-                student_id,
-                allergy
-            )
-            VALUES ($1, $2, $3, $4, $5, $6)
-                RETURNING patient_id
-        `;
+        const patient = this.patientRepository.create({
+            name: patientDto.name,
+            address: patientDto.address,
+            major: patientDto.major,
+            phone: patientDto.phone,
+            studentId: patientDto.studentId,
+            allergy: patientDto.allergy,
+        });
 
-        const result = await this.dataSource.query(insertPatientQuery, [
-            patientDto.name,
-            patientDto.address,
-            patientDto.major,
-            patientDto.phone,
-            patientDto.studentId,
-            patientDto.allergy,
-        ]);
+        const result = await this.patientRepository.save(patient);
 
         return {
             message: "Patient registered successfully",
-            patientId: result[0].patient_id,
+            patientId: result.id,
         };
     }
+
 
     async searchPatient(studentId: string) {
         const query = `

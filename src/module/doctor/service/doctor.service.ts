@@ -137,4 +137,20 @@ export class DoctorService {
         }
         return null;
     }
+
+    async getAllDoctorInfo(){
+        const query= `
+        SELECT 
+            doctor.doctor_name,
+            doctor.doctor_address,
+            doctor.doctor_phone,
+            department.department_name,
+            department.department_number
+        FROM doctor
+        LEFT JOIN department ON doctor.department_id = department.department_id`;
+
+        const doctorInfo = await this.dataSource.query(query);
+
+        return doctorInfo;
+    }
 }
